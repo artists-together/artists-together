@@ -1,0 +1,12 @@
+{
+  "extends": "@artists-together/config/typescript/lib.json",
+  "include": ["./sst-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}

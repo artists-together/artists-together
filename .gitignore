@@ -1,0 +1,13 @@
+*.db
+*.tsbuildinfo
+.DS_Store
+.cache
+.env
+.eslintcache
+.next
+.pnpm-debug.log*
+.sst
+_.log
+dist
+node_modules/
+out

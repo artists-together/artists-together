@@ -1,0 +1,11 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+catalog:
+  "@types/node": ^20
+  "sst": ^3.13
+  "ts-deepmerge": ^7.0.2
+  "ts-retry": ^6.0.0
+  "typescript": ^5.8
+  "valibot": ^1.0.0

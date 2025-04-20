@@ -1,0 +1,28 @@
+{
+  "name": "@artists-together/pal-discord",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "sst shell vite-node src/index.ts",
+    "build": "sst shell",
+    "start": "sst shell vite-node --mode production src/index.ts",
+    "sync": "sst shell tsx ./scripts/sync.ts"
+  },
+  "dependencies": {
+    "@artists-together/core": "workspace:*",
+    "discord.js": "^14.18.0",
+    "sst": "catalog:",
+    "ts-retry": "catalog:",
+    "valibot": "catalog:"
+  },
+  "devDependencies": {
+    "@artists-together/config": "workspace:*",
+    "@types/node": "catalog:",
+    "prettier": "^3.5.3",
+    "typescript": "catalog:",
+    "vite-node": "^3.1.1"
+  },
+  "prettier": {
+    "semi": false
+  }
+}

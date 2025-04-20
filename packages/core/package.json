@@ -1,0 +1,32 @@
+{
+  "name": "@artists-together/core",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    "./database/*": "./src/database/*.ts",
+    "./cloudflare/*": "./src/cloudflare/*.ts",
+    "./discord/*": "./src/discord/*.ts",
+    "./lib/*": "./src/lib/*.ts"
+  },
+  "scripts": {
+    "database": "sst shell drizzle-kit",
+    "seed": "sst shell tsx ./scripts/seed.ts"
+  },
+  "dependencies": {
+    "@discordjs/core": "^2.0.1",
+    "@discordjs/rest": "^2.4.3",
+    "@libsql/client": "^0.15.3",
+    "cloudflare": "^4.2.0",
+    "drizzle-orm": "^0.41.0",
+    "drizzle-seed": "^0.3.1",
+    "sst": "catalog:",
+    "valibot": "catalog:"
+  },
+  "devDependencies": {
+    "@artists-together/config": "workspace:*",
+    "@types/node": "catalog:",
+    "drizzle-kit": "^0.30.6",
+    "tsx": "^4.19.3",
+    "typescript": "catalog:"
+  }
+}
