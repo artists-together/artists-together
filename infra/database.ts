@@ -20,6 +20,24 @@ export const database = new sst.Linkable("Database", {
   },
 })
 
+const databaseMigrator = new sst.aws.Function("DatabaseMigrator", {
+  handler: "apps/functions/src/database/migrator.handler",
+  link: [database],
+  copyFiles: [
+    {
+      from: "migrations",
+      to: "packages/core/migrations",
+    },
+  ],
+})
+
+if (!$dev) {
+  new aws.lambda.Invocation("DatabaseMigratorInvocation", {
+    input: Date.now().toString(), // This bursts caching
+    functionName: databaseMigrator.name,
+  })
+}
+
 new sst.x.DevCommand("DatabaseStudio", {
   dev: {
     title: "Database",

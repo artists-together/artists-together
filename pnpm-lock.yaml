@@ -45,6 +45,9 @@ importers:
       '@artists-together/core':
         specifier: 'workspace:'
         version: link:../../packages/core
+      drizzle-orm:
+        specifier: ^0.41.0
+        version: 0.41.0(@libsql/client@0.15.3)(gel@2.0.2)
       sst:
         specifier: 'catalog:'
         version: 3.13.9
