@@ -4,7 +4,7 @@
   "sideEffects": false,
   "exports": {
     "./database/*": "./src/database/*.ts",
-    "./cloudflare/*": "./src/cloudflare/*.ts",
+    "./kv/*": "./src/kv/*.ts",
     "./discord/*": "./src/discord/*.ts",
     "./lib/*": "./src/lib/*.ts"
   },
@@ -16,10 +16,10 @@
     "@discordjs/core": "^2.0.1",
     "@discordjs/rest": "^2.4.3",
     "@libsql/client": "^0.15.3",
-    "cloudflare": "^4.2.0",
     "drizzle-orm": "^0.41.0",
     "drizzle-seed": "^0.3.1",
     "sst": "catalog:",
+    "unstorage": "^1.15.0",
     "valibot": "catalog:"
   },
   "devDependencies": {

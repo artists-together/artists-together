@@ -1,20 +1,19 @@
-import { cloudflare } from "@artists-together/core/cloudflare/client"
+import { kv } from "@artists-together/core/kv/client"
 import { attemptAsync } from "@artists-together/core/lib/attempt"
 import { createExponetialDelay, retryAsyncDecorator } from "ts-retry"
-import { Resource } from "sst"
 import {
   ActivityType,
   ChatInputCommandInteraction,
   Client,
   MessageFlags,
-  // PermissionFlagsBits,
+  PermissionFlagsBits,
   SlashCommandBuilder,
 } from "discord.js"
 
 export const builder = new SlashCommandBuilder()
   .setName("admin")
   .setDescription("Admin-only commands")
-  // .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
   .addSubcommand((subcommand) =>
     subcommand
       .setName("extinguish")
@@ -60,22 +59,14 @@ export const builder = new SlashCommandBuilder()
 
 async function bootstrapClientStatus(client: Client<true>) {
   const result = await attemptAsync(
-    retryAsyncDecorator(
-      async () =>
-        cloudflare.kv.namespaces.values
-          .get(Resource.CloudflareKv.id, "pal-discord-status", {
-            account_id: Resource.CloudflareAccountId.value,
-          })
-          .then((response) => response.json())
-          .then((json) => json.value),
-      {
-        delay: createExponetialDelay(20),
-        maxTry: 5,
-      },
-    ),
+    retryAsyncDecorator(async () => kv.getItem<string>("pal-discord-status"), {
+      delay: createExponetialDelay(20),
+      maxTry: 5,
+    }),
   )
 
   if (!result.success) return
+  if (!result.data) return
 
   client.user.setPresence({
     activities: [
@@ -96,16 +87,7 @@ async function subcommandStatusSet(interaction: ChatInputCommandInteraction) {
 
   const result = await attemptAsync(
     retryAsyncDecorator(
-      async () =>
-        cloudflare.kv.namespaces.values.update(
-          Resource.CloudflareKv.id,
-          "pal-discord-status",
-          {
-            account_id: Resource.CloudflareAccountId.value,
-            metadata: "",
-            value: status,
-          },
-        ),
+      async () => kv.setItem<string>("pal-discord-status", status),
       {
         delay: createExponetialDelay(20),
         maxTry: 5,
@@ -141,20 +123,10 @@ async function subcommandStatusRemove(
   })
 
   const result = await attemptAsync(
-    retryAsyncDecorator(
-      async () =>
-        cloudflare.kv.namespaces.values.delete(
-          Resource.CloudflareKv.id,
-          "pal-discord-status",
-          {
-            account_id: Resource.CloudflareAccountId.value,
-          },
-        ),
-      {
-        delay: createExponetialDelay(20),
-        maxTry: 5,
-      },
-    ),
+    retryAsyncDecorator(async () => kv.removeItem("pal-discord-status"), {
+      delay: createExponetialDelay(20),
+      maxTry: 5,
+    }),
   )
 
   if (!result.success) {
