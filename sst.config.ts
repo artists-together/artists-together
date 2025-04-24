@@ -13,7 +13,6 @@ export default $config({
           organization: process.env.TURSO_ORGANIZATION,
           apiToken: process.env.TURSO_API_TOKEN,
         },
-        vercel: "1.14.3",
       },
     }
   },
