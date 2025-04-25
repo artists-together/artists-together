@@ -1,7 +1,6 @@
 import { Resource } from "sst"
 import { Client, Partials, GatewayIntentBits } from "discord.js"
-import admin from "./services/admin"
-import friendRole from "./services/friend-role"
+import { readdirSync } from "fs"
 
 export const client = new Client({
   intents: [
@@ -23,7 +22,16 @@ client.once("ready", async (client) => {
     throw Error("Could not find guild. Did you invite PAL to your guild?")
   }
 
-  await Promise.all([admin(client), friendRole(client)])
+  const services = readdirSync("./src/services/")
+
+  await Promise.all(
+    services.map(async (service) => {
+      const module = await import("./services/" + service)
+      if ("default" in module && typeof module.default === "function") {
+        module.default(client)
+      }
+    }),
+  )
 
   console.log("🚀 Pal is up and running!")
   console.log(` - Name:  ${client.user.tag}`)
