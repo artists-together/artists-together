@@ -13,6 +13,10 @@ declare module "sst" {
       "id": string
       "type": "sst.cloudflare.Kv"
     }
+    "CloudflareSecret": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
     "Database": {
       "token": string
       "type": "sst.sst.Linkable"

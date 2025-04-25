@@ -3,6 +3,10 @@ export const secret = {
     "CloudflareAccountId",
     sst.cloudflare.DEFAULT_ACCOUNT_ID
   ),
+  cloudflareSecret: new sst.Secret(
+    "CloudflareSecret",
+    process.env.CLOUDFLARE_API_TOKEN
+  ),
   discordServerId: new sst.Secret("DiscordServerId", "1096868255454478398"),
   discordBotId: new sst.Secret("DiscordBotId"),
   discordBotSecret: new sst.Secret("DiscordBotSecret"),
