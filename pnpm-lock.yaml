@@ -21,6 +21,9 @@ catalogs:
     valibot:
       specifier: ^1.0.0
       version: 1.0.0
+    w:
+      specifier: ^2.3.1
+      version: 2.3.1
 
 importers:
 
@@ -45,9 +48,6 @@ importers:
       '@artists-together/core':
         specifier: 'workspace:'
         version: link:../../packages/core
-      drizzle-orm:
-        specifier: ^0.41.0
-        version: 0.41.0(@libsql/client@0.15.3)(gel@2.0.2)
       sst:
         specifier: 'catalog:'
         version: 3.13.9
@@ -82,6 +82,9 @@ importers:
       valibot:
         specifier: 'catalog:'
         version: 1.0.0(typescript@5.8.3)
+      w:
+        specifier: 'catalog:'
+        version: 2.3.1
     devDependencies:
       '@artists-together/config':
         specifier: workspace:*
@@ -1135,7 +1138,6 @@ packages:
 
   libsql@0.5.5:
     resolution: {integrity: sha512-TEFJ1X6lP0yDZIUYznlvQnzdajQ7TEPAAw1C9AvFiDp4OSBiH//yj3VHbYQSFkeHtFvL+6O4waOWQM1LA5Qggw==}
-    cpu: [x64, arm64, wasm32]
     os: [darwin, linux, win32]
 
   lodash.snakecase@4.1.1:
@@ -1521,6 +1523,9 @@ packages:
   vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
+
+  w@2.3.1:
+    resolution: {integrity: sha512-tsdkeVsK5xvi/zLQZimOcYshowsRJuX5mbdWZsmt+3FncCh/c82N7Ig6GSIJJSF0bjKUv7vfqtgryBr7thq4tA==}
 
   web-streams-polyfill@3.3.3:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
@@ -2769,6 +2774,8 @@ snapshots:
       typescript: 5.8.3
 
   vary@1.1.2: {}
+
+  w@2.3.1: {}
 
   web-streams-polyfill@3.3.3: {}
 

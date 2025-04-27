@@ -60,7 +60,7 @@ export const builder = new SlashCommandBuilder()
 async function bootstrapClientStatus(client: Client<true>) {
   const result = await attemptAsync(
     retryAsyncDecorator(async () => kv.getItem<string>("pal-discord-status"), {
-      delay: createExponetialDelay(20),
+      delay: createExponetialDelay(0),
       maxTry: 5,
     }),
   )
@@ -89,7 +89,7 @@ async function subcommandStatusSet(interaction: ChatInputCommandInteraction) {
     retryAsyncDecorator(
       async () => kv.setItem<string>("pal-discord-status", status),
       {
-        delay: createExponetialDelay(20),
+        delay: createExponetialDelay(0),
         maxTry: 5,
       },
     ),
@@ -124,7 +124,7 @@ async function subcommandStatusRemove(
 
   const result = await attemptAsync(
     retryAsyncDecorator(async () => kv.removeItem("pal-discord-status"), {
-      delay: createExponetialDelay(20),
+      delay: createExponetialDelay(0),
       maxTry: 5,
     }),
   )

@@ -1,6 +1,9 @@
 import { Resource } from "sst"
 import { drizzle } from "drizzle-orm/libsql/web"
 
+export * from "drizzle-orm/libsql/migrator"
+export * from "drizzle-orm"
+
 export const database = drizzle({
   casing: "snake_case",
   connection: {

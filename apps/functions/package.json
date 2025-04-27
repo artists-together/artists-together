@@ -8,7 +8,6 @@
   },
   "dependencies": {
     "@artists-together/core": "workspace:",
-    "drizzle-orm": "^0.41.0",
     "sst": "catalog:"
   },
   "devDependencies": {
