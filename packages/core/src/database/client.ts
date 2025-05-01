@@ -1,5 +1,5 @@
 import { Resource } from "sst"
-import { drizzle } from "drizzle-orm/libsql/web"
+import { drizzle } from "drizzle-orm/libsql"
 
 export * from "drizzle-orm/libsql/migrator"
 export * from "drizzle-orm"
@@ -9,5 +9,6 @@ export const database = drizzle({
   connection: {
     url: Resource.Database.url,
     authToken: Resource.Database.token,
+    fetch: globalThis.fetch,
   },
 })

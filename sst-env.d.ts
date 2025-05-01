@@ -50,11 +50,6 @@ declare module "sst" {
       "type": "sst.sst.Secret"
       "value": string
     }
-    "SomeFunction": {
-      "name": string
-      "type": "sst.aws.Function"
-      "url": string
-    }
   }
 }
 /// <reference path="sst-env.d.ts" />

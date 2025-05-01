@@ -14,24 +14,24 @@ const tursoDatabaseToken = $dev
 export const database = new sst.Linkable("Database", {
   properties: {
     url: $dev
-      ? "file:./local.db"
+      ? `file:${process.cwd()}/${$app.name}.db`
       : $interpolate`libsql://${tursoDatabase.name}-${turso.config.organization}.turso.io`,
     token: $dev ? "local" : tursoDatabaseToken.jwt,
   },
 })
 
-const databaseMigrator = new sst.aws.Function("DatabaseMigrator", {
-  handler: "apps/functions/src/database/migrator.handler",
-  link: [database],
-  copyFiles: [
-    {
-      from: "migrations",
-      to: "packages/core/migrations",
-    },
-  ],
-})
-
 if (!$dev) {
+  const databaseMigrator = new sst.aws.Function("DatabaseMigrator", {
+    handler: "apps/functions/src/database/migrator.handler",
+    link: [database],
+    copyFiles: [
+      {
+        from: "migrations",
+        to: "packages/core/migrations",
+      },
+    ],
+  })
+
   new aws.lambda.Invocation("DatabaseMigratorInvocation", {
     input: Date.now().toString(), // This bursts caching
     functionName: databaseMigrator.name,
