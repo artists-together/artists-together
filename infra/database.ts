@@ -15,7 +15,7 @@ export const database = new sst.Linkable("Database", {
   properties: {
     url: $dev
       ? `file:${process.cwd()}/${$app.name}.db`
-      : $interpolate`libsql://${tursoDatabase.name}-${turso.config.organization}.turso.io`,
+      : $interpolate`libsql://${tursoDatabase.name}-${turso.config.organization}.aws-${tursoDatabase.database.primaryRegion}.turso.io`,
     token: $dev ? "local" : tursoDatabaseToken.jwt,
   },
 })
