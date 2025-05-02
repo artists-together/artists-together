@@ -1,5 +1,5 @@
 import { database, eq } from "@artists-together/core/database/client"
-import { live } from "@artists-together/core/database/schema"
+import { livestream } from "@artists-together/core/database/schema"
 import { ROLE } from "@artists-together/core/discord/constants"
 import { ActivityType, Presence, type Activity, type Client } from "discord.js"
 import { createExponetialDelay, retryAsync } from "ts-retry"
@@ -63,9 +63,9 @@ export default (client: Client<true>) => {
       await retryAsync(
         async () =>
           database
-            .update(live)
+            .update(livestream)
             .set({ url })
-            .where(eq(live.accountId, member.user.id)),
+            .where(eq(livestream.accountId, member.user.id)),
         {
           delay: createExponetialDelay(0),
         },
@@ -80,7 +80,9 @@ export default (client: Client<true>) => {
     // Stopped streaming
     await member.roles.remove(ROLE.LIVE_NOW)
     await retryAsync(async () =>
-      database.delete(live).where(eq(live.accountId, member.user.id)),
+      database
+        .delete(livestream)
+        .where(eq(livestream.accountId, member.user.id)),
     )
 
     return log("Streaming finished. Removing DB entry and role", {
