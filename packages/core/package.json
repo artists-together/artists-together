@@ -3,7 +3,10 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
-    "./database/*": "./src/database/*.ts",
+    "./database/*": [
+      "./src/database/*/index.ts",
+      "./src/database/*.ts"
+    ],
     "./kv/*": "./src/kv/*.ts",
     "./discord/*": "./src/discord/*.ts",
     "./lib/*": "./src/lib/*.ts"
