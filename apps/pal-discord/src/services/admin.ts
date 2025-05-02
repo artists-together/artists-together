@@ -111,7 +111,7 @@ async function subcommandStatusSet(interaction: ChatInputCommandInteraction) {
   })
 
   await interaction.editReply({
-    content: "👍",
+    content: "✅",
   })
 }
 
@@ -140,7 +140,7 @@ async function subcommandStatusRemove(
   })
 
   await interaction.editReply({
-    content: "👍",
+    content: "✅",
   })
 }
 
