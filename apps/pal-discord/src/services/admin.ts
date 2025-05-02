@@ -144,6 +144,36 @@ async function subcommandStatusRemove(
   })
 }
 
+async function subcommandMessageSend(interaction: ChatInputCommandInteraction) {
+  await interaction.deferReply({
+    flags: MessageFlags.Ephemeral,
+  })
+
+  const message = interaction.options.getString("message")
+  const attachment = interaction.options.getAttachment("attachment")
+
+  if (!message && !attachment) {
+    return interaction.editReply({
+      content: "I cannot send an empty message!",
+    })
+  }
+
+  if (!interaction.channel?.isSendable()) {
+    return interaction.editReply({
+      content: "I cannot send a message on this channel!",
+    })
+  }
+
+  await interaction.channel.send({
+    content: message || "",
+    files: attachment ? [attachment.url] : undefined,
+  })
+
+  await interaction.editReply({
+    content: "✅",
+  })
+}
+
 export default async (client: Client<true>) => {
   await bootstrapClientStatus(client)
 
@@ -154,6 +184,10 @@ export default async (client: Client<true>) => {
           return await subcommandStatusSet(interaction)
         case "remove":
           return await subcommandStatusRemove(interaction)
+        case "message":
+          return await subcommandMessageSend(interaction)
+        default:
+          console.error("Unknown interaction")
       }
     }
   })
