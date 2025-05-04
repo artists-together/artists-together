@@ -1,6 +1,6 @@
 import { getChannel } from "@/lib/utils"
 import { ROLE } from "@artists-together/core/discord/constants"
-import { draw } from "@artists-together/core/lib/utils"
+import { choose } from "@artists-together/core/lib/utils"
 import { EmbedBuilder, type Client } from "discord.js"
 
 const MESSAGE_TITLE = [
@@ -34,9 +34,9 @@ export async function reportError(client: Client<true>, error: Error) {
     content:
       `<@&${ROLE.TECH_SUPPORT}>` +
       " " +
-      draw(MESSAGE_TITLE) +
+      choose(MESSAGE_TITLE) +
       " " +
-      draw(MESSAGE_SUBTITLE),
+      choose(MESSAGE_SUBTITLE),
     embeds: [
       new EmbedBuilder({
         color: 0xff1800,
