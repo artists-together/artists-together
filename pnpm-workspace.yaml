@@ -8,6 +8,6 @@ catalog:
   "ts-deepmerge": ^7.0.2
   "ts-retry": ^6.0.0
   "typescript": ^5.8
-  "valibot": ^1.0.0
+  "valibot": ^1.1.0
   "w": ^2.3.1
 
