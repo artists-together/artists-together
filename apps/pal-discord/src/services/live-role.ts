@@ -33,7 +33,7 @@ function findStreamingActivity(presence: Presence | null) {
 
 export default (client: Client<true>) => {
   client.on("presenceUpdate", async (oldPresence, newPresence) => {
-    const member = oldPresence?.member || newPresence.member
+    const member = newPresence.member || oldPresence?.member
 
     if (!member) {
       return log("Ignoring role update. Missing member property", {
@@ -44,17 +44,22 @@ export default (client: Client<true>) => {
 
     const oldActivity = findStreamingActivity(oldPresence)
     const newActivity = findStreamingActivity(newPresence)
+    const hasLiveRole = member.roles.cache.has(ROLE.LIVE_NOW)
 
     // Bail out when the streaming URL is the same
     if (
       oldActivity?.url &&
       newActivity?.url &&
-      oldActivity.url === newActivity.url
+      oldActivity.url === newActivity.url &&
+      hasLiveRole
     ) {
-      return log("Ignoring role update. URLs are the same", {
-        oldActivity,
-        newActivity,
-      })
+      return log(
+        "Ignoring role update. URLs are the same and user already has role",
+        {
+          oldActivity,
+          newActivity,
+        },
+      )
     }
 
     // If still streaming, update the URL
