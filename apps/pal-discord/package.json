@@ -9,10 +9,10 @@
   },
   "dependencies": {
     "@artists-together/core": "workspace:*",
-    "discord.js": "^14.18.0",
+    "discord.js": "^14.19.3",
     "sst": "catalog:",
     "ts-retry": "catalog:",
-    "tsx": "^4.19.3",
+    "tsx": "^4.19.4",
     "valibot": "catalog:",
     "w": "catalog:"
   },
