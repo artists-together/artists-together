@@ -1,35 +1,10 @@
 {
   "name": "@artists-together/core",
   "type": "module",
-  "sideEffects": false,
   "exports": {
-    "./database/*": [
-      "./src/database/*/index.ts",
-      "./src/database/*.ts"
-    ],
-    "./kv/*": "./src/kv/*.ts",
-    "./discord/*": "./src/discord/*.ts",
-    "./lib/*": "./src/lib/*.ts"
+    "./*": "./src/*/index.ts"
   },
-  "scripts": {
-    "database": "sst shell drizzle-kit",
-    "seed": "sst shell tsx ./scripts/seed.ts"
-  },
-  "dependencies": {
-    "@discordjs/core": "^2.1.0",
-    "@discordjs/rest": "^2.5.0",
-    "@libsql/client": "^0.15.7",
-    "drizzle-orm": "^0.43.1",
-    "drizzle-seed": "^0.3.1",
-    "sst": "catalog:",
-    "unstorage": "^1.16.0",
-    "valibot": "catalog:"
-  },
-  "devDependencies": {
-    "@artists-together/config": "workspace:*",
-    "@types/node": "catalog:",
-    "drizzle-kit": "^0.31.1",
-    "tsx": "^4.19.4",
-    "typescript": "catalog:"
+  "peerDependencies": {
+    "valibot": ">=1.2.0"
   }
 }

@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @screen cursor {
+    * {
+      cursor: none !important;
+    }
+  }
+}
+
+@layer components {
+  .lottie {
+    transform: none !important;
+  }
+
+  .lottie,
+  .lottie path {
+    fill: currentColor !important;
+    stroke: currentColor !important;
+  }
+}
