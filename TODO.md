@@ -1,6 +1,5 @@
 # web
 - scroll animations
-- lottie
 - ws
   - reconnect
   - self

@@ -1,8 +1,9 @@
+import clsx from "clsx"
 import CursorScope from "./cursor-scope"
 
 const ITEMS = [
   {
-    href: "https://twitch.tv/channel",
+    href: "https://www.twitch.tv/artiststogether",
     label: "Visit our Twitch channel",
     icon: (
       <svg
@@ -21,7 +22,7 @@ const ITEMS = [
     ),
   },
   {
-    href: "https://discord.gg/server",
+    href: "https://discord.artiststogether.online",
     label: "Join our Discord server",
     icon: (
       <svg
@@ -38,7 +39,7 @@ const ITEMS = [
     ),
   },
   {
-    href: "https://instagram.com/your-profile",
+    href: "https://www.instagram.com/artiststogether.online",
     label: "Follow us on Instagram",
     icon: (
       <svg
@@ -77,7 +78,11 @@ export default function Navigation() {
               href={item.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="grid size-full place-items-center rounded-3.5 ring-2 ring-inset ring-outsider-violet-50 hover:bg-outsider-violet-300 active:ring-8"
+              className={clsx(
+                "grid size-full place-items-center rounded-3.5 ring-2 ring-inset ring-outsider-violet-50",
+                "hover:bg-outsider-violet-300 focus:outline-none focus-visible:bg-outsider-violet-300 active:ring-8",
+                "transition-[background,box-shadow] duration-200 ease-out",
+              )}
             >
               {item.icon}
               <span className="sr-only">{item.label}</span>

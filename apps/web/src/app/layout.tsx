@@ -3,7 +3,6 @@ import clsx from "clsx"
 import type { Metadata } from "next"
 import * as fonts from "@/assets/fonts"
 import Cursor from "@/components/cursor"
-import Cursors from "@/components/cursors"
 
 export const metadata: Metadata = {
   title: {
@@ -32,7 +31,6 @@ export default function Layout(props: LayoutProps<"/">) {
       >
         <div className="pointer-events-none fixed inset-0 isolate bg-gradient-to-b from-[rgba(11,14,30,0)] from-25% to-[#2b0049]" />
         {props.children}
-        <Cursors />
         <Cursor />
       </body>
     </html>

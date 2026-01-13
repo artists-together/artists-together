@@ -1,73 +1,80 @@
 import * as v from "valibot"
 
-/**
- * A cursor position.
- * ```ts
- * ["root", null]         // Hidden
- * ["root", 13, 12]      // 15% left, 12% top from root
- * ["root:logo", 13, 12] // 15% left, 12% top from root:logo
- * ```
- */
-export const Position = v.tuple([v.string(), v.number(), v.number()])
+function serde<
+  TInput,
+  TOutput,
+  TIssue extends v.BaseIssue<unknown>,
+  Schema extends v.BaseSchema<TInput, TOutput, TIssue>,
+>(schema: Schema) {
+  const serde = {
+    serialize: (input: v.InferInput<Schema>) => JSON.stringify(input),
+    deserialize: v.safeParser(v.pipe(v.string(), v.parseJson(), schema)),
+  }
 
-export type Position = v.InferInput<typeof Position>
+  return serde as typeof serde & {
+    "~input": v.InferInput<Schema>
+    "~output": v.InferOutput<Schema>
+  }
+}
 
-export const NullablePosition = v.nullable(Position)
+export const CursorPosition = v.nullable(
+  v.union([
+    v.tuple([v.number(), v.number()]),
+    v.tuple([v.number(), v.number(), v.string()]),
+  ]),
+)
 
-export type NullablePosition = v.InferInput<typeof NullablePosition>
+export type CursorPosition = v.InferInput<typeof CursorPosition>
 
-export const NullablePositionWithDelta = v.tuple([v.number(), NullablePosition])
+export const CursorPositionWithDelta = v.tuple([
+  v.number(), // Delta since last movement
+  CursorPosition,
+])
 
-export type NullablePositionWithDelta = v.InferInput<
-  typeof NullablePositionWithDelta
+export type CursorPositionWithDelta = v.InferInput<
+  typeof CursorPositionWithDelta
 >
 
+export const CursorPositions = v.array(CursorPositionWithDelta)
+
+export type CursorPositions = v.InferInput<typeof CursorPositions>
+
 /**
- * A collection of cursor positions.
- *
- * @example
+ * The state of the room
  * ```ts
- * [
- *   ["eafa5d32-5042-4e8c-89b9-e67ff463e16e", [13, 12]], // with position
- *   ["77e97875-53ae-4ed1-a418-73a66c965c9f", null] // without position
- * ]
- * ```
+ * {
+ *   "7888c203-09fb-4e37-b9ff-48f21b468fbd": [13, 12], // 13%, 12% from viewport
+ *   "0624dc03-84cc-4b3a-ae3b-d9906ae49e90": [13, 12, "logo"], // 13%, 12% from "logo" scope
+ *   "a749173e-5fe9-4889-946e-07607fea4ced": null, // not visible
+ * }
  */
-export const Room = v.array(v.tuple([v.string(), NullablePosition]))
+export const Room = v.record(v.pipe(v.string(), v.uuid()), CursorPosition)
 
 export type Room = v.InferInput<typeof Room>
 
-const messages = {
-  client: {
-    disconnect: v.tuple([v.literal("disconnect")]),
-    connect: v.tuple([v.literal("connect"), NullablePositionWithDelta]),
-    update: v.tuple([v.literal("update"), NullablePositionWithDelta]),
-  },
+export const messages = {
+  /**
+   * Events send from the server to the client
+   */
   server: {
-    update: v.tuple([v.literal("update"), Room]),
+    connect: serde(v.tuple([v.literal("connect"), Room])),
+    disconnect: serde(
+      v.tuple([v.literal("disconnect"), v.pipe(v.string(), v.uuid())]),
+    ),
+    update: serde(
+      v.tuple([
+        v.literal("update"),
+        v.pipe(v.string(), v.uuid()),
+        CursorPositions,
+      ]),
+    ),
+  },
+  /**
+   * Events send from the client to the server
+   */
+  client: {
+    update: serde(v.tuple([v.literal("update"), CursorPositions])),
   },
 }
 
-type Messages = typeof messages
-
-// type Message<
-//   Environment extends keyof Messages,
-//   Event extends keyof Messages[Environment],
-// > = v.InferInput<Messages[Environment][Event]>
-
-export function parser<
-  Environment extends keyof Messages,
-  Event extends keyof Messages[Environment],
->(environment: Environment, event: Event) {
-  const schema = messages[environment][event]
-  return v.safeParser(v.pipe(v.string(), v.parseJson(), schema))
-}
-
-const e = parser("client", "connect")("")
-
-// export function createStringify<
-// >(environment: Environment, event: Event) {
-
-// }
-
-// export function createParser(string: String) {}
+export type Messages = typeof messages

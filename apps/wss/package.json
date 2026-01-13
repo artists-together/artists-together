@@ -2,7 +2,7 @@
   "name": "@artists-together/wss",
   "type": "module",
   "scripts": {
-    "dev": "node --watch src/index.ts"
+    "dev": "NODE_ENV=development node --watch src/index.ts"
   },
   "dependencies": {
     "@artists-together/core": "workspace:*",

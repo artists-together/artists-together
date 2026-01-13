@@ -1,15 +1,24 @@
-import { PropsWithChildren } from "react"
-import Cursors from "@/components/cursors"
+"use client"
+
+import { motion, useScroll, useTransform } from "motion/react"
+import { ComponentRef, PropsWithChildren, useRef } from "react"
+import CursorScope from "@/components/cursor-scope"
 import Logo from "@/components/logo"
 import Navigation from "@/components/navigation"
-import CursorScope from "@/components/cursor-scope"
 
 function Scroll({ children }: PropsWithChildren) {
+  const ref = useRef<ComponentRef<"div">>(null)
+  const scroll = useScroll({
+    target: ref,
+  })
+
+  const scale = useTransform(scroll.scrollYProgress, [0, 0.5, 1], [0, 1, 2])
+
   return (
-    <div className="relative h-[500dvh]">
-      <div className="sticky top-0 grid h-dvh place-items-center">
+    <div ref={ref} className="relative h-[500dvh]">
+      <motion.div className="sticky top-0 grid h-dvh place-items-center">
         {children}
-      </div>
+      </motion.div>
     </div>
   )
 }

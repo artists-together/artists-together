@@ -1,10 +1,12 @@
 "use client"
 
-import type {
-  NullablePositionWithDelta,
-  Position,
+import {
+  CursorPosition,
+  CursorPositions,
+  CursorPositionWithDelta,
+  messages,
 } from "@artists-together/core/ws"
-import { Throttler } from "@tanstack/react-pacer"
+import { Throttler, useThrottledCallback } from "@tanstack/react-pacer"
 import {
   AnimatePresence,
   clamp,
@@ -15,10 +17,10 @@ import {
 } from "motion/react"
 import { useEffect, useState } from "react"
 import Icon from "@/components/icon"
+import { DATA_ATTR_SCOPE, measure, ROOT_SCOPE } from "@/lib/cursors"
 import { createCriticallyDampedSpring } from "@/lib/motion"
 import { useScreen } from "@/lib/tailwind"
-import { ins } from "motion/react-m"
-import { DATA_ATTR_SCOPE, measure, ROOT_SCOPE } from "@/lib/cursors"
+import { webSocket } from "@/lib/ws"
 
 const springAppear: Transition = {
   type: "spring",
@@ -41,36 +43,46 @@ const springScale = createCriticallyDampedSpring({
 
 const clampCursorPosition = clamp.bind(null, 0, 1)
 
+const alone = true
+
 export default function Cursor() {
   const [state, setState] = useState<"hide" | "show">("hide")
   const reducedMotion = useReducedMotion()
   const cursor = useScreen("cursor")
+  // const alone = useCursorsStore((state) => Boolean(state.room.length))
   const scale = useSpring(1, springScale)
   const x = useSpring(0, springMove)
   const y = useSpring(0, springMove)
 
   const isEligibleForCursor = cursor && !reducedMotion
 
-  if (!isEligibleForCursor && state) {
+  if (!isEligibleForCursor && state === "show") {
     setState("hide")
   }
+
+  // const refAnimationState = useRef({
+  //   timestamp: 0,
+  //   positions: [] as NullablePositionWithDelta[],
+  // })
 
   useEffect(() => {
     if (!isEligibleForCursor) return
 
+    console.log("remounting animation thingy")
+
     const abortController = new AbortController()
 
-    const alone = true
-    let timestamp: number | undefined = undefined
-    let positions: NullablePositionWithDelta[] = []
+    let timestamp = 0
+    let positions: CursorPositions = []
 
     const notify = new Throttler(
       () => {
-        console.log("TODO: 🔔 send websocket message with positions", positions)
+        webSocket.send(messages.client.update.serialize(["update", positions]))
+        console.log("🔔 send websocket message with positions", positions)
         positions = []
       },
       {
-        trailing: true,
+        trailing: false,
         wait: alone ? 5_000 : 500,
       },
     )
@@ -87,16 +99,17 @@ export default function Cursor() {
           return notify.maybeExecute()
         }
 
-        const closestScope =
-          (event.target instanceof Element &&
-            event.target.closest(`[${DATA_ATTR_SCOPE}]`)) ||
-          document.documentElement
+        // const closestScope =
+        //   (event.target instanceof Element &&
+        //     event.target.closest(`[${DATA_ATTR_SCOPE}]`)) ||
+        //   document.documentElement
 
-        const scope = closestScope.getAttribute(DATA_ATTR_SCOPE) || ROOT_SCOPE
-        const rect = measure(scope, closestScope)
+        // const scope = closestScope.getAttribute(DATA_ATTR_SCOPE) || ROOT_SCOPE
+        const scope = ROOT_SCOPE
+        const rect = measure(scope, document.documentElement)
         const x = clampCursorPosition((event.clientX - rect.x) / rect.width)
         const y = clampCursorPosition((event.clientY - rect.y) / rect.height)
-        const position: NullablePositionWithDelta = [delta, [scope, x, y]]
+        const position: CursorPositionWithDelta = [delta, [x, y]]
 
         if (alone) {
           positions = [position]
@@ -107,7 +120,7 @@ export default function Cursor() {
         return notify.maybeExecute()
       },
       {
-        trailing: true,
+        trailing: false,
         wait: alone ? 5_000 : 60,
       },
     )

@@ -1,36 +1,36 @@
 "use client"
 
-import { createParser } from "@artists-together/core/ws"
-import { useSelectedLayoutSegments } from "next/navigation"
-import { createContext, useEffect, useEffectEvent } from "react"
+import { Messages, messages } from "@artists-together/core/ws"
+import ReconnectingWebSocket from "reconnecting-websocket"
 
-export const webSocket = new globalThis.WebSocket("")
+export const webSocket = new ReconnectingWebSocket(
+  process.env.NODE_ENV === "development" ? "ws://localhost:8080" : "",
+  [],
+  {
+    connectionTimeout: 1000,
+    maxRetries: 10,
+  },
+)
 
-const parser = createParser("")
+export function onMessage<T extends keyof Messages["server"]>(
+  key: T,
+  callback: (message: Messages["server"][T]["~output"][1]) => void,
+) {
+  function handler(event: MessageEvent<unknown>) {
+    if (typeof event.data !== "string") return
+    const parsed = messages.server[key].deserialize(event.data)
+    if (!parsed.success) return
+    callback(parsed.output[1])
+  }
 
-export function WebSocket() {
-  const segments = useSelectedLayoutSegments()
-  const room = segments.join(":")
+  webSocket.addEventListener("message", handler)
+  return () => webSocket.removeEventListener("message", handler)
+}
 
-  useEffect(() => {
-    const abortController = new AbortController()
-
-    function onOpen() {}
-
-    function onMessage(message: MessageEvent) {
-      if (typeof message.data !== "string") return
-    }
-
-    webSocket.addEventListener("open", onOpen, {
-      signal: abortController.signal,
-    })
-
-    webSocket.addEventListener("message", onMessage, {
-      signal: abortController.signal,
-    })
-
-    return () => {
-      abortController.abort()
-    }
-  }, [])
+export function sendMessage<T extends keyof Messages["client"]>(
+  key: T,
+  data: Messages["client"][T]["~input"],
+) {
+  const payload = messages.client[key].serialize(data)
+  webSocket.send(payload)
 }

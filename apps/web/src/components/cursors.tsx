@@ -1,22 +1,22 @@
 "use client"
 
-import type { NullablePosition, Room } from "@artists-together/core/ws"
-import {
-  cancelFrame,
-  frame,
-  motion,
-  Process,
-  resize,
-  useMotionTemplate,
-  useSpring,
-} from "motion/react"
+import type { messages } from "@artists-together/core/ws"
+import { motion, resize, useMotionTemplate, useSpring } from "motion/react"
 import { AnimatePresence, useScroll } from "motion/react"
-import { PerfectCursor } from "perfect-cursors"
 import { useEffect, useState } from "react"
-import { DATA_ATTR_SCOPE, measure, measurements } from "@/lib/cursors"
+import {
+  cursorsStore,
+  DATA_ATTR_SCOPE,
+  measure,
+  measurements,
+  PerfectCursor,
+} from "@/lib/cursors"
 import { shuffle } from "@/lib/utils"
 import { colors } from "../../tailwind.config"
 import Icon from "./icon"
+import { onMessage } from "@/lib/ws"
+import { useStore } from "zustand"
+import { useShallow } from "zustand/shallow"
 
 const CURSOR_COLORS = shuffle([
   colors["acrylic-red"][400],
@@ -33,16 +33,17 @@ const CURSOR_COLORS = shuffle([
   colors["plushie-pink"][400],
 ])
 
-function Cursor({
-  color,
-  position,
-}: {
-  color: string
-  position: NullablePosition
-}) {
-  const x = useSpring(position ? position[1] : 0)
-  const y = useSpring(position ? position[2] : 0)
-  const transform = useMotionTemplate`translateX(${x}%) translateY(${y}%)`
+function Cursor({ color, id }: { color: string; id: string }) {
+  // const x = useSpring(position ? position[1] : 0)
+  // const y = useSpring(position ? position[2] : 0)
+  // const transform = useMotionTemplate`translateX(${x}%) translateY(${y}%)`
+
+  useEffect(() => {
+    const sub = cursorsStore.subscribe(
+      (room) => room.room.find(([cursorId]) => cursorId === id),
+      ([]) => {},
+    )
+  })
 
   const [pc] = useState(
     () =>
@@ -55,11 +56,11 @@ function Cursor({
   )
 
   useEffect(() => {
-    if (!position) {
-      pc.dispose()
-      pc.queue = []
-      pc.prevPoint = undefined
-    }
+    // if (!position) {
+    //   pc.dispose()
+    //   pc.queue = []
+    //   pc.prevPoint = undefined
+    // }
   }, [pc, position])
 
   useEffect(() => {
@@ -119,12 +120,11 @@ function Cursor({
 }
 
 export default function Cursors() {
-  const [room, setRoom] = useState<Room>([
-    [crypto.randomUUID(), ["root", 13, 12]],
-    [crypto.randomUUID(), ["root:logo", 10, 35]],
-  ])
-
   const scroll = useScroll()
+  const cursors = useStore(
+    cursorsStore,
+    useShallow((store) => store.room.map(([id]) => id)),
+  )
 
   useEffect(() => {
     const cleanupScrollY = scroll.scrollY.on("change", () => {
@@ -142,11 +142,11 @@ export default function Cursors() {
 
   return (
     <div>
-      {room.map(([key, position], index) => (
+      {cursors.map((id, index) => (
         <Cursor
-          key={key}
+          key={id}
+          id={id}
           color={CURSOR_COLORS[index % CURSOR_COLORS.length]}
-          position={position}
         />
       ))}
     </div>
