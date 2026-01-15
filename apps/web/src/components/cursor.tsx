@@ -72,7 +72,6 @@ export default function Cursor() {
 
   const isEligibleForCursor = cursor && !reducedMotion
 
-  // TODO: we should hide the cursor with CSS only when isEligibleForCursor
   if (!isEligibleForCursor && state === "show") {
     setState("hide")
   }
@@ -96,6 +95,9 @@ export default function Cursor() {
     const notify = new Throttler(
       () => {
         if (!positions.length) return
+        if (!webSocket) {
+          throw Error("WebSocket is unavailable during SSR.")
+        }
         webSocket.send(messages.client.update.serialize(["update", positions]))
         positions = []
       },

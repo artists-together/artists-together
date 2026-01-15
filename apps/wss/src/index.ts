@@ -25,7 +25,7 @@ wss.on("error", (error) => {
 wss.on("connection", (ws) => {
   ws.id = crypto.randomUUID()
   ws.position = null
-  console.log("[connection] connection", ws.id)
+  console.log("[connection] new connection", wss.clients.size, ws.id)
 
   const room: Room = {}
   for (const client of wss.clients) {

@@ -1,5 +1,6 @@
 import { Room } from "@artists-together/core/ws"
 import { atom, computed } from "nanostores"
+import { ensure } from "./utils"
 
 export const DATA_ATTR_SCOPE = "data-scope"
 
@@ -22,6 +23,24 @@ export const atomScope = computed(atomScopes, (scopes) => {
 export const atomRoom = atom<Room>({})
 
 export const measurements = new Map<string | HTMLElement, DOMRectReadOnly>()
+
+export function measureScope(scope: string | null | undefined) {
+  return ensure(measurements, {
+    key: scope || document.documentElement,
+    set: () => {
+      if (!scope) {
+        return document.documentElement.getBoundingClientRect()
+      }
+
+      const element = document.querySelector(`[${DATA_ATTR_SCOPE}]`)
+      if (!element) {
+        throw Error(`Unable to select element with scope: ${scope}`)
+      }
+
+      return element.getBoundingClientRect()
+    },
+  })
+}
 
 export type Point2D = [number, number]
 
@@ -191,6 +210,18 @@ export class PerfectCursor {
   }
 
   static MAX_INTERVAL = 300
+
+  // TODO: New addition - must be tested
+  reset = () => {
+    this.queue = []
+    this.prevPoint = undefined
+    this.state = "idle"
+    this.spline.clear()
+    if (this.lastRequestId) {
+      cancelAnimationFrame(this.lastRequestId)
+      this.lastRequestId = 0
+    }
+  }
 
   dispose = () => {
     if (this.timeoutId) clearTimeout(this.timeoutId)
