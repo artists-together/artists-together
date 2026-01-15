@@ -210,7 +210,7 @@ export const colors = {
 
 export const screens = {
   cursor: {
-    raw: "(hover:hover) and (pointer:fine)",
+    raw: "(hover: hover) and (pointer: fine)",
   },
   xs: "360px",
   sm: "640px",

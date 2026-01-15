@@ -29,12 +29,10 @@ wss.on("connection", (ws) => {
 
   const room: Room = {}
   for (const client of wss.clients) {
-    client.id
-    client.position
     room[client.id] = client.position
   }
 
-  ws.send(messages.server.connect.serialize(["connect", room]))
+  ws.send(messages.server.handshake.serialize(["handshake", room]))
 
   ws.on("error", (error) => {
     console.error(
@@ -82,10 +80,15 @@ wss.on("connection", (ws) => {
     if (last) {
       ws.position = last[1]
     } else {
+      // TODO: handle this!!!! client should never send an empty array of CursorPositions!!!!
       console.warn("[connection] unable to find last position", ws.id, payload)
     }
 
-    const message = messages.client.update.serialize(["update", payload])
+    const message = messages.server.update.serialize([
+      "update",
+      [ws.id, payload],
+    ])
+
     for (const client of wss.clients) {
       if (client === ws) continue
       if (client.readyState !== WebSocket.OPEN) continue

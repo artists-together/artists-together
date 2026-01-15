@@ -57,15 +57,14 @@ export const messages = {
    * Events send from the server to the client
    */
   server: {
-    connect: serde(v.tuple([v.literal("connect"), Room])),
+    handshake: serde(v.tuple([v.literal("handshake"), Room])),
     disconnect: serde(
       v.tuple([v.literal("disconnect"), v.pipe(v.string(), v.uuid())]),
     ),
     update: serde(
       v.tuple([
         v.literal("update"),
-        v.pipe(v.string(), v.uuid()),
-        CursorPositions,
+        v.tuple([v.pipe(v.string(), v.uuid()), CursorPositions]),
       ]),
     ),
   },

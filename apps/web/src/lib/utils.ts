@@ -17,3 +17,25 @@ export function shuffle<T>(array: T[]): T[] {
 
   return array
 }
+
+export type EnsureOptions<K, V> = {
+  key: K
+  set: (key: K) => V
+}
+
+export function ensure<K, V>(
+  map: Map<K, V>,
+  { key, set }: EnsureOptions<K, V>,
+): V
+
+export function ensure<K extends WeakKey, V>(
+  weakMap: WeakMap<K, V>,
+  { key, set }: EnsureOptions<K, V>,
+): V
+
+export function ensure(
+  map: Map<unknown, unknown> | WeakMap<WeakKey, unknown>,
+  { key, set }: EnsureOptions<any, unknown>,
+) {
+  return map.has(key) ? map.get(key) : map.set(key, set(key)).get(key)
+}

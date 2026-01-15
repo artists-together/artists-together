@@ -1,24 +1,22 @@
-"use client"
-
-import { motion, useScroll, useTransform } from "motion/react"
-import { ComponentRef, PropsWithChildren, useRef } from "react"
+import { PropsWithChildren } from "react"
 import CursorScope from "@/components/cursor-scope"
+import Cursors from "@/components/cursors"
 import Logo from "@/components/logo"
 import Navigation from "@/components/navigation"
 
 function Scroll({ children }: PropsWithChildren) {
-  const ref = useRef<ComponentRef<"div">>(null)
-  const scroll = useScroll({
-    target: ref,
-  })
+  // const ref = useRef<ComponentRef<"div">>(null)
+  // const scroll = useScroll({
+  //   target: ref,
+  // })
 
-  const scale = useTransform(scroll.scrollYProgress, [0, 0.5, 1], [0, 1, 2])
+  // const scale = useTransform(scroll.scrollYProgress, [0, 0.5, 1], [0, 1, 2])
 
   return (
-    <div ref={ref} className="relative h-[500dvh]">
-      <motion.div className="sticky top-0 grid h-dvh place-items-center">
+    <div className="relative h-[500dvh]">
+      <div className="sticky top-0 grid h-dvh place-items-center">
         {children}
-      </motion.div>
+      </div>
     </div>
   )
 }
@@ -65,7 +63,7 @@ export default function Page() {
         </Scroll>
         <Scroll>Artists, together.</Scroll>
       </main>
-      {/*<Cursors />*/}
+      <Cursors />
     </>
   )
 }

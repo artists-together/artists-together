@@ -23,6 +23,11 @@ export const metadata: Metadata = {
 export default function Layout(props: LayoutProps<"/">) {
   return (
     <html lang="en" className="bg-arpeggio-black-900 text-outsider-violet-50">
+      <head>
+        <noscript>
+          <style>{/* TODO: rever initial text animation state here */}</style>
+        </noscript>
+      </head>
       <body
         className={clsx(
           "antialiased",

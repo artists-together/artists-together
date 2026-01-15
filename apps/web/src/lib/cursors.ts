@@ -1,33 +1,27 @@
 import { Room } from "@artists-together/core/ws"
-import { createStore } from "zustand"
-import { subscribeWithSelector } from "zustand/middleware"
-
-type CursorsStore = {
-  room: Room
-  setRoom: (room: Room) => void
-}
-
-export const cursorsStore = createStore<CursorsStore>()(
-  subscribeWithSelector((set) => ({
-    room: {
-      [crypto.randomUUID()]: ["root", 13, 12],
-      [crypto.randomUUID()]: ["root:logo", 13, 12],
-    },
-    setRoom: (room) => set({ room }),
-  })),
-)
+import { atom, computed } from "nanostores"
 
 export const DATA_ATTR_SCOPE = "data-scope"
 
-export const ROOT_SCOPE = "root"
+/**
+ * An atom representing the currently active cursor scopes.
+ */
+export const atomScopes = atom<string[]>([])
 
-export const measurements = new Map<string, DOMRectReadOnly>()
+/**
+ * An atom representing the latest active cursor scope.
+ */
+export const atomScope = computed(atomScopes, (scopes) => {
+  const scope = scopes[scopes.length - 1]
+  return scope ? scope : null
+})
 
-export function measure(scope: string, element: Element) {
-  return measurements.has(scope)
-    ? measurements.get(scope)!
-    : measurements.set(scope, element.getBoundingClientRect()).get(scope)!
-}
+/**
+ * An atom representing the state of the cursor room.
+ */
+export const atomRoom = atom<Room>({})
+
+export const measurements = new Map<string | HTMLElement, DOMRectReadOnly>()
 
 export type Point2D = [number, number]
 
