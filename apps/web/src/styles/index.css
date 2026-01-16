@@ -3,9 +3,8 @@
 @tailwind utilities;
 
 @layer base {
-  .cursor,
-  .cursor * {
-    cursor: none !important;
+  html {
+    color-scheme: dark;
   }
 }
 
@@ -18,5 +17,10 @@
   .lottie path {
     fill: currentColor !important;
     stroke: currentColor !important;
+  }
+
+  .cursor,
+  .cursor * {
+    cursor: none !important;
   }
 }
