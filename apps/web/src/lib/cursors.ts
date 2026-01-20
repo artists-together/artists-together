@@ -1,9 +1,6 @@
 import { Room } from "@artists-together/core/ws"
-import { Point } from "motion"
 import { atom } from "nanostores"
 import { onMessage } from "./ws"
-
-export const DATA_ATTR_SCOPE = "data-scope"
 
 export const atomRoom = atom<Room>({})
 
