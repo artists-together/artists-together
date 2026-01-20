@@ -32,7 +32,7 @@ export function measureScope(scope: string | null | undefined) {
         return document.documentElement.getBoundingClientRect()
       }
 
-      const element = document.querySelector(`[${DATA_ATTR_SCOPE}]`)
+      const element = document.querySelector(`[${DATA_ATTR_SCOPE}="${scope}"]`)
       if (!element) {
         throw Error(`Unable to select element with scope: ${scope}`)
       }

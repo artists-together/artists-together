@@ -17,8 +17,6 @@ export const webSocket =
         },
       )
 
-console.log("Running!", typeof document === "undefined")
-
 export function onMessage<T extends keyof Messages["server"]>(
   key: T,
   callback: (message: Messages["server"][T]["~output"][1]) => void,
