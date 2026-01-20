@@ -1,5 +1,4 @@
 import { PropsWithChildren } from "react"
-import CursorScope from "@/components/cursor-scope"
 import Cursors from "@/components/cursors"
 import Logo from "@/components/logo"
 import Navigation from "@/components/navigation"
@@ -29,9 +28,7 @@ export default function Page() {
         <h1 className="sr-only">Artists Together</h1>
         <Scroll>
           <div className="relative mx-auto aspect-[2000/1080] w-full max-w-[28.75rem]">
-            <CursorScope scope="logo" className="absolute inset-0 size-full">
-              <Logo />
-            </CursorScope>
+            <Logo />
           </div>
           <div className="absolute inset-x-2 bottom-2 grid place-items-center">
             <a

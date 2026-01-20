@@ -10,6 +10,7 @@ import {
   AnimatePresence,
   clamp,
   motion,
+  resize,
   Transition,
   useReducedMotion,
   useSpring,
@@ -17,24 +18,11 @@ import {
 import { computed } from "nanostores"
 import { useEffect, useState } from "react"
 import Icon from "@/components/icon"
-import {
-  atomRoom,
-  atomScope,
-  DATA_ATTR_SCOPE,
-  measurements,
-} from "@/lib/cursors"
+import { atomDocumentSize, atomRoom, getDocumentSize } from "@/lib/cursors"
 import { createCriticallyDampedSpring } from "@/lib/motion"
 import { useStore } from "@/lib/nanostores"
 import { useScreen } from "@/lib/tailwind"
-import { ensure } from "@/lib/utils"
 import { webSocket } from "@/lib/ws"
-
-const springAppear: Transition = {
-  type: "spring",
-  damping: 2,
-  mass: 0.075,
-  stiffness: 100,
-}
 
 const springMove: Transition = {
   type: "spring",
@@ -43,7 +31,7 @@ const springMove: Transition = {
   stiffness: 100,
 }
 
-const springScale = createCriticallyDampedSpring({
+const springClick = createCriticallyDampedSpring({
   mass: 0.5,
   stiffness: 200,
 })
@@ -66,7 +54,7 @@ export default function Cursor() {
   const reducedMotion = useReducedMotion()
   const cursor = useScreen("cursor")
   const alone = useStore(atomAlone)
-  const scale = useSpring(1, springScale)
+  const scale = useSpring(1, springClick)
   const x = useSpring(0, springMove)
   const y = useSpring(0, springMove)
 
@@ -75,6 +63,12 @@ export default function Cursor() {
   if (!isEligibleForCursor && state === "show") {
     setState("hide")
   }
+
+  useEffect(() => {
+    return resize(document.documentElement, (_, rect) => {
+      atomDocumentSize.set(rect)
+    })
+  }, [])
 
   useEffect(() => {
     if (isEligibleForCursor) {
@@ -103,7 +97,7 @@ export default function Cursor() {
       },
       {
         leading: false,
-        wait: alone ? 5_000 : 500,
+        wait: alone ? 5_000 : 1_000,
       },
     )
 
@@ -118,26 +112,9 @@ export default function Cursor() {
           return notify.maybeExecute()
         }
 
-        const scope = atomScope.get()
-
-        const rect = ensure(measurements, {
-          key: scope || document.documentElement,
-          set: () => {
-            if (!scope) {
-              return document.documentElement.getBoundingClientRect()
-            }
-
-            const element = document.querySelector(`[${DATA_ATTR_SCOPE}]`)
-            if (!element) {
-              throw Error(`Unable to select element with scope: ${scope}`)
-            }
-
-            return element.getBoundingClientRect()
-          },
-        })
-
-        const x = clampCursorPosition((event.clientX - rect.x) / rect.width)
-        const y = clampCursorPosition((event.clientY - rect.y) / rect.height)
+        const rect = getDocumentSize()
+        const x = clampCursorPosition(event.pageX / rect.width)
+        const y = clampCursorPosition(event.pageY / rect.height)
         const position: CursorPositionWithDelta = [delta, [x, y]]
 
         if (alone) {
@@ -225,13 +202,21 @@ export default function Cursor() {
       {state === "show" ? (
         <motion.div
           aria-hidden
-          className="pointer-events-none fixed left-0 top-0 isolate z-50 origin-top-left select-none"
-          initial={{ scale: 0, transition: springAppear }}
-          animate={{ scale: 1, transition: springAppear }}
-          exit={{ scale: 0, transition: springAppear }}
-          style={{ x, y, scale }}
+          className="pointer-events-none fixed left-0 top-0 z-50 origin-top-left select-none"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          exit={{ scale: 0 }}
+          style={{ x, y }}
         >
-          <Icon src="cursor" alt="" className="drop-shadow-cursor" />
+          <motion.div className="origin-top-left" style={{ scale }}>
+            <Icon
+              src="cursor"
+              alt=""
+              width={23}
+              height={31}
+              className="w-6 drop-shadow-cursor"
+            />
+          </motion.div>
         </motion.div>
       ) : null}
     </AnimatePresence>

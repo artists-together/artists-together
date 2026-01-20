@@ -29,7 +29,6 @@ export function onMessage<T extends keyof Messages["server"]>(
     if (typeof event.data !== "string") return
     const parsed = messages.server[key].deserialize(event.data)
     if (!parsed.success) return
-    console.log("🌐 Received message", parsed.output)
     callback(parsed.output[1])
   }
 

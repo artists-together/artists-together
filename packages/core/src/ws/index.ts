@@ -17,12 +17,7 @@ function serde<
   }
 }
 
-export const CursorPosition = v.nullable(
-  v.union([
-    v.tuple([v.number(), v.number()]),
-    v.tuple([v.number(), v.number(), v.string()]),
-  ]),
-)
+export const CursorPosition = v.nullable(v.tuple([v.number(), v.number()]))
 
 export type CursorPosition = v.InferInput<typeof CursorPosition>
 
@@ -44,7 +39,6 @@ export type CursorPositions = v.InferInput<typeof CursorPositions>
  * ```ts
  * {
  *   "7888c203-09fb-4e37-b9ff-48f21b468fbd": [13, 12], // 13%, 12% from viewport
- *   "0624dc03-84cc-4b3a-ae3b-d9906ae49e90": [13, 12, "logo"], // 13%, 12% from "logo" scope
  *   "a749173e-5fe9-4889-946e-07607fea4ced": null, // not visible
  * }
  */

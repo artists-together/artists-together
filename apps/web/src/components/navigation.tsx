@@ -1,5 +1,4 @@
 import clsx from "clsx"
-import CursorScope from "./cursor-scope"
 
 const ITEMS = [
   {
@@ -59,21 +58,14 @@ const ITEMS = [
 
 export default function Navigation() {
   return (
-    <CursorScope
-      as="nav"
-      scope="navigation"
+    <nav
       role="navigation"
       aria-label="Social media links"
       className="fixed end-4 top-4 z-10 rounded-4 bg-outsider-violet-50 text-outsider-violet-800 shadow-button"
     >
       <ul className="flex items-center justify-center">
         {ITEMS.map((item, index) => (
-          <CursorScope
-            as="li"
-            key={item.label}
-            scope={index.toString()}
-            className="size-12 flex-none"
-          >
+          <li key={item.label} className="size-12 flex-none">
             <a
               href={item.href}
               target="_blank"
@@ -87,9 +79,9 @@ export default function Navigation() {
               {item.icon}
               <span className="sr-only">{item.label}</span>
             </a>
-          </CursorScope>
+          </li>
         ))}
       </ul>
-    </CursorScope>
+    </nav>
   )
 }

@@ -29,6 +29,7 @@ wss.on("connection", (ws) => {
 
   const room: Room = {}
   for (const client of wss.clients) {
+    if (client.id === ws.id) continue
     room[client.id] = client.position
   }
 

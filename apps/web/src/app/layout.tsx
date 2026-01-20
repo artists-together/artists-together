@@ -33,7 +33,7 @@ export default function Layout(props: LayoutProps<"/">) {
       </head>
       <body
         className={clsx(
-          "antialiased",
+          "relative antialiased",
           Object.values(fonts).map((font) => font.variable),
         )}
       >
