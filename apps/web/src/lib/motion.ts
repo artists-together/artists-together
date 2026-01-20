@@ -1,4 +1,4 @@
-import { SpringOptions, Transition } from "motion"
+import { SpringOptions, Transition, Variants } from "motion"
 
 /**
  *
@@ -21,3 +21,22 @@ export function createCriticallyDampedSpring({
     bounce: 0,
   }
 }
+
+export const cursorPresenceVariants = {
+  hide: {
+    scale: 0,
+    transition: {
+      type: "spring",
+      mass: 0.15,
+      stiffness: 200,
+    },
+  },
+  show: {
+    scale: 1,
+    transition: {
+      type: "spring",
+      mass: 0.05,
+      stiffness: 200,
+    },
+  },
+} satisfies Variants

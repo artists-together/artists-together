@@ -1,12 +1,18 @@
 "use client"
 
 import type { CursorPosition, CursorPositions } from "@artists-together/core/ws"
-import { motion, useMotionTemplate, useSpring } from "motion/react"
+import {
+  AnimatePresence,
+  motion,
+  Point,
+  useMotionTemplate,
+  useSpring,
+} from "motion/react"
 import { computed } from "nanostores"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Icon from "@/components/icon"
-import { atomRoom, getDocumentSize, Point2D } from "@/lib/cursors"
-import { createCriticallyDampedSpring } from "@/lib/motion"
+import { atomRoom, getDocumentSize } from "@/lib/cursors"
+import { cursorPresenceVariants } from "@/lib/motion"
 import { useStore } from "@/lib/nanostores"
 import { shuffle } from "@/lib/utils"
 import { onMessage } from "@/lib/ws"
@@ -27,17 +33,13 @@ const COLORS = shuffle([
   colors["plushie-pink"][400],
 ])
 
-function getCursorPosition([x, y]: NonNullable<CursorPosition>): Point2D {
+function getCursorPosition([x, y]: NonNullable<CursorPosition>): Point {
   const rect = getDocumentSize()
-  const pointX = (x * 100 * rect.width) / rect.width
-  const pointY = (y * 100 * rect.height) / rect.height
-  return [pointX, pointY]
+  return {
+    x: (x * 100 * rect.width) / rect.width,
+    y: (y * 100 * rect.height) / rect.height,
+  }
 }
-
-const scaleSpring = createCriticallyDampedSpring({
-  mass: 1,
-  stiffness: 100,
-})
 
 function Cursor({
   color,
@@ -46,42 +48,12 @@ function Cursor({
 }: {
   color: string
   id: string
-  point?: Point2D
+  point?: Point
 }) {
-  const x = useSpring(point?.[0] || 0)
-  const y = useSpring(point?.[1] || 0)
-  const scale = useSpring(0, scaleSpring)
+  const [state, setState] = useState<"hide" | "show">(point ? "show" : "hide")
+  const x = useSpring(point?.x || 0)
+  const y = useSpring(point?.y || 0)
   const transform = useMotionTemplate`translateX(${x}%) translateY(${y}%)`
-
-  useEffect(() => {
-    scale.set(point ? 1 : 0)
-  }, [point, scale])
-
-  // const [pc] = useState(
-  //   () =>
-  //     new PerfectCursor((point) => {
-  //       x.set(point[0])
-  //       y.set(point[1])
-  //     }),
-  // )
-
-  // // Dispose the internal PerfectCursor timeout
-  // useEffect(() => {
-  //   return () => {
-  //     pc.dispose()
-  //   }
-  // }, [pc])
-
-  // Reset PerfectCursor state when hidden
-
-  useEffect(() => {
-    // if (cursor) {
-    //     const point = getCursorPosition(cursor)
-    //     x.jump(point[0])
-    //     y.jump(point[1])
-    //     setState("show")
-    // }
-  }, [x, y])
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | undefined = undefined
@@ -99,7 +71,7 @@ function Cursor({
       const [delta, position] = current
 
       timeout = setTimeout(() => {
-        scale.set(position ? 1 : 0)
+        setState(position ? "show" : "hide")
 
         if (!position) {
           return update()
@@ -131,17 +103,17 @@ function Cursor({
         timeout = undefined
       }
     }
-  }, [id, scale, x, y])
+  }, [id, x, y])
 
   return (
-    <motion.div
-      className="absolute inset-0 select-none"
-      initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
-      exit={{ scale: 0 }}
-      style={{ transform }}
-    >
-      <motion.div style={{ scale }} className="inline-block origin-top-left">
+    <motion.div className="absolute inset-0 select-none" style={{ transform }}>
+      <motion.div
+        className="inline-block origin-top-left"
+        initial="hide"
+        animate={state}
+        exit="hide"
+        variants={cursorPresenceVariants}
+      >
         <Icon
           src="cursor"
           alt=""
@@ -165,18 +137,20 @@ export default function CursorsComponent() {
       className="pointer-events-none absolute inset-0 z-50 size-full select-none overflow-hidden"
       aria-hidden
     >
-      {roomIds.map((id, index) => {
-        const cursor = atomRoom.get()[id]
-        const cursorPoint = cursor ? getCursorPosition(cursor) : undefined
-        return (
-          <Cursor
-            key={id}
-            id={id}
-            color={COLORS[index % COLORS.length]}
-            point={cursorPoint}
-          />
-        )
-      })}
+      <AnimatePresence>
+        {roomIds.map((id, index) => {
+          const cursor = atomRoom.get()[id]
+          const cursorPoint = cursor ? getCursorPosition(cursor) : undefined
+          return (
+            <Cursor
+              key={id}
+              id={id}
+              color={COLORS[index % COLORS.length]}
+              point={cursorPoint}
+            />
+          )
+        })}
+      </AnimatePresence>
     </div>
   )
 }

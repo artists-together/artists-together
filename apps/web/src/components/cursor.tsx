@@ -19,7 +19,10 @@ import { computed } from "nanostores"
 import { useEffect, useState } from "react"
 import Icon from "@/components/icon"
 import { atomDocumentSize, atomRoom, getDocumentSize } from "@/lib/cursors"
-import { createCriticallyDampedSpring } from "@/lib/motion"
+import {
+  createCriticallyDampedSpring,
+  cursorPresenceVariants,
+} from "@/lib/motion"
 import { useStore } from "@/lib/nanostores"
 import { useScreen } from "@/lib/tailwind"
 import { webSocket } from "@/lib/ws"
@@ -203,9 +206,10 @@ export default function Cursor() {
         <motion.div
           aria-hidden
           className="pointer-events-none fixed left-0 top-0 z-50 origin-top-left select-none"
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          exit={{ scale: 0 }}
+          initial="hide"
+          animate="show"
+          exit="hide"
+          variants={cursorPresenceVariants}
           style={{ x, y }}
         >
           <motion.div className="origin-top-left" style={{ scale }}>
