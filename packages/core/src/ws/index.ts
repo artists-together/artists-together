@@ -17,12 +17,17 @@ function serde<
   }
 }
 
-export const CursorPosition = v.nullable(v.tuple([v.number(), v.number()]))
+export const CursorPosition = v.nullable(
+  v.tuple([
+    v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
+    v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
+  ]),
+)
 
 export type CursorPosition = v.InferInput<typeof CursorPosition>
 
 export const CursorPositionWithDelta = v.tuple([
-  v.number(), // Delta since last movement
+  v.pipe(v.number(), v.minValue(0), v.maxValue(3600000)),
   CursorPosition,
 ])
 
