@@ -63,11 +63,9 @@ function Cursor({
       const current = queue.shift()
 
       if (!current) {
-        console.log("no more entries on queue")
         return
       }
 
-      console.log("🚀 processing position", current)
       const [delta, position] = current
 
       timeout = setTimeout(() => {
@@ -78,13 +76,8 @@ function Cursor({
         }
 
         const point = getCursorPosition(position)
-        x.set(point[0])
-        y.set(point[1])
-        // if (pc.prevPoint) {
-        //   pc.addPoint(point)
-        // } else {
-        //   pc.prevPoint = point
-        // }
+        x.set(point.x)
+        y.set(point.y)
         update()
       }, delta)
     }
