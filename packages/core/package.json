@@ -2,7 +2,7 @@
   "name": "@artists-together/core",
   "type": "module",
   "exports": {
-    "./*": "./src/*/index.ts"
+    "./*": "./src/*.ts"
   },
   "peerDependencies": {
     "valibot": ">=1.2.0"
