@@ -1,6 +1,6 @@
 import { messages, CursorPosition, Room } from "@artists-together/core/ws"
-import { WebSocketServer, WebSocket } from "ws"
 import { createHash } from "crypto"
+import { WebSocketServer, WebSocket } from "ws"
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 8080
 const ALLOWED_ORIGINS = new Set(["https://www.artiststogether.online"])
