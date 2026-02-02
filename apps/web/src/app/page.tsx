@@ -15,6 +15,7 @@ import Cursors from "@/components/cursors"
 import Logo from "@/components/logo"
 import Navigation from "@/components/navigation"
 import clsx from "clsx"
+import Lenis from "@/components/lenis"
 
 const CATEGORIES = [
   "drawing",
@@ -181,7 +182,7 @@ function Scroll({
 
 export default function Page() {
   return (
-    <>
+    <Lenis>
       <header className="relative">
         <Navigation />
         <Header />
@@ -211,6 +212,6 @@ export default function Page() {
         <Scroll position="last">Artists, together.</Scroll>
       </main>
       <Cursors />
-    </>
+    </Lenis>
   )
 }
