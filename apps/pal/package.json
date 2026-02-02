@@ -1,0 +1,16 @@
+{
+  "name": "@artists-together/pal",
+  "type": "module",
+  "scripts": {
+    "dev": "NODE_ENV=development node --watch src/index.ts",
+    "start": "NODE_ENV=production node src/index.ts"
+  },
+  "dependencies": {
+    "@artists-together/core": "workspace:*",
+    "discord.js": "^14.25.1",
+    "valibot": "^1.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5"
+  }
+}

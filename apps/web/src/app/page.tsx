@@ -1,21 +1,95 @@
-import { PropsWithChildren } from "react"
+"use client"
+
+import {
+  motion,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+  wrap,
+} from "motion/react"
+import { ComponentRef, PropsWithChildren, useEffect, useRef } from "react"
 import Cursors from "@/components/cursors"
 import Logo from "@/components/logo"
 import Navigation from "@/components/navigation"
 
-function Scroll({ children }: PropsWithChildren) {
+const CATEGORIES = [
+  "drawing",
+  "modelling",
+  "refurbishing",
+  "sculpting",
+  "composing",
+  "filming",
+  "writing",
+  "singing",
+  "building",
+  "dancing",
+  "developing",
+  "designing",
+  "acting",
+  "crafting",
+  "illustrating",
+  "performing",
+  "animating",
+  "photographing",
+]
+
+function Particles() {
+  return (
+    <div className="relative h-full">
+      {CATEGORIES.map((category) => (
+        <div key={category} className="absolute left-0 top-0">
+          {category}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function Scroll({ children, debug }: PropsWithChildren<{ debug?: boolean }>) {
+  const refContainer = useRef<ComponentRef<"div">>(null)
+  const refStart = useRef<ComponentRef<"div">>(null)
+  const refEnd = useRef<ComponentRef<"div">>(null)
+
   // const ref = useRef<ComponentRef<"div">>(null)
-  // const scroll = useScroll({
-  //   target: ref,
+  const scrollContainer = useScroll({
+    target: refContainer,
+    offset: ["start start", "end end"],
+  })
+
+  const scrollEnd = useScroll({
+    target: refEnd,
+    offset: ["start center", "end start"],
+  })
+
+  // useMotionValueEvent(scrollContainer.scrollYProgress, "change", (e) => {
+  //   if (debug) console.log(e)
   // })
 
-  // const scale = useTransform(scroll.scrollYProgress, [0, 0.5, 1], [0, 1, 2])
+  // const scale = useTransform(
+  //   scrollContainer.scrollYProgress,
+  //   [0, 0.5, 1],
+  //   [0, 1, 2],
+  // )
+
+  const style = useTransform(scrollEnd.scrollYProgress, [0, 1], {
+    scale: [1, 5],
+    y: ["0%", "-10%"],
+    opacity: [1, 0],
+    filter: ["blur(0px)", "blur(64px)"],
+  })
 
   return (
-    <div className="relative h-[500dvh]">
-      <div className="sticky top-0 grid h-dvh place-items-center">
+    <div
+      ref={refContainer}
+      className="relative -mb-[100svh] h-[500svh] overflow-x-clip"
+    >
+      <motion.div
+        className="sticky top-0 grid h-dvh place-items-center"
+        style={style}
+      >
         {children}
-      </div>
+      </motion.div>
+      <div ref={refEnd} className="absolute inset-x-0 bottom-[100svh] h-svh" />
     </div>
   )
 }
@@ -42,21 +116,27 @@ export default function Page() {
       </header>
       <main
         id="content"
-        className="relative text-center font-fraunces text-[2.5rem] font-light"
+        className="relative text-center font-fraunces font-light sm:text-[2.083vw]"
       >
-        <Scroll>
-          Artists Together is a worldwide, inclusive, and diverse community for
-          all kinds of artists and skill levels.
+        <Scroll debug>
+          Artists Together is a worldwide, inclusive, and diverse
+          <br />
+          community for all kinds of artists and skill levels.
         </Scroll>
         <Scroll>
-          We want to give artists from around the globe a place to share, learn,
-          and talk with other creative folks.
+          We want to give artists from around the globe a place to share,
+          <br /> learn, and talk with other creative folks.
         </Scroll>
         <Scroll>
-          We celebrate creativity, diversity, entertainment, and learning.
+          We celebrate creativity, diversity,
+          <br /> entertainment, and learning.
         </Scroll>
+        {/*<Scroll>
+          <Particles />
+        </Scroll>*/}
         <Scroll>
-          So, create, share, and enjoy, because we are glad to have you here.
+          So, create, share, and enjoy,
+          <br /> because we are glad to have you here.
         </Scroll>
         <Scroll>Artists, together.</Scroll>
       </main>
