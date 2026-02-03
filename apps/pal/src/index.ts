@@ -1,19 +1,8 @@
-import { Client, Partials, GatewayIntentBits } from "discord.js"
+import { client } from "./lib/client.ts"
+import "./features/kick-quests.ts"
+import "./features/live-users.ts"
 
-export const client = new Client({
-  intents: [
-    GatewayIntentBits.DirectMessages,
-    GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildMessageReactions,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.GuildModeration,
-    GatewayIntentBits.GuildPresences,
-    GatewayIntentBits.Guilds,
-  ],
-  partials: [Partials.Message, Partials.Channel, Partials.Reaction],
-})
-
-client.once("ready", () =>
+client.once("clientReady", () =>
   console.log(`[info] logged in as ${client.user?.tag}`),
 )
 

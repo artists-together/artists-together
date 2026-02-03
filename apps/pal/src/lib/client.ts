@@ -1,5 +1,5 @@
 import { Client, Partials, GatewayIntentBits } from "discord.js"
-import { ensure } from "./utils.js"
+import { ensure } from "./utils.ts"
 
 export const client = new Client({
   intents: [
@@ -13,9 +13,10 @@ export const client = new Client({
   ],
   partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 })
-client.guilds.cache
 
-export const guild = await ensure(client.guilds.cache, {
-  key: String(process.env.DISCORD_SERVER_ID),
-  set: async (key) => client.guilds.fetch(key),
-})
+export function getGuild() {
+  return ensure(client.guilds.cache, {
+    key: String(process.env.DISCORD_SERVER_ID),
+    set: async (key) => client.guilds.fetch(key),
+  })
+}

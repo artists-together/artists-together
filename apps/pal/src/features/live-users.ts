@@ -1,6 +1,6 @@
-import { client, guild } from "@/lib/client.js"
 import { Activity, ActivityType, Presence } from "discord.js"
-import { ROLE } from "./lib/constants.js"
+import { client, getGuild } from "../lib/client.ts"
+import { ROLE } from "../lib/constants.ts"
 
 function isValidStreamingActivity(activity: Activity) {
   if (activity.type !== ActivityType.Streaming) return false
@@ -32,7 +32,9 @@ function findValidStreamingActivity(presence: Presence | null) {
  * Sets the live role to verified users who are streaming
  * in art-related categories.
  */
-client.on("ready", () => {
+client.on("clientReady", async () => {
+  const guild = await getGuild()
+
   guild.members.cache.forEach((member) => {
     if (member.user.bot) return
 
