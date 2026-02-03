@@ -1,5 +1,5 @@
 import { REST, Routes } from "discord.js"
-import * as admin from "../features/admin/command.ts"
+import * as admin from "../features/admin.ts"
 
 const rest = new REST({ version: "10" }).setToken(
   String(process.env.DISCORD_BOT_TOKEN),

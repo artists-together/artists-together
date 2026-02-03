@@ -4,8 +4,8 @@ import {
   PermissionFlagsBits,
   SlashCommandBuilder,
 } from "discord.js"
-import { client, getRole } from "../../lib/client.ts"
-import { ROLE } from "../../lib/constants.ts"
+import { client, getRole } from "../lib/client.ts"
+import { ROLE } from "../lib/constants.ts"
 
 const COMMAND = {
   SEND: {
@@ -107,13 +107,13 @@ async function handleSendMessage(interaction: ChatInputCommandInteraction) {
     })
 
     return interaction.reply({
-      content: "All set! ✅",
+      content: "All set!",
       ephemeral: true,
     })
   } catch (error) {
     console.error("[admin] send message:", error)
     return interaction.reply({
-      content: "Oops! Something went wrong… 🫣",
+      content: "Oops! Something went wrong…",
       ephemeral: true,
     })
   }
@@ -132,13 +132,13 @@ async function handleStatusSet(interaction: ChatInputCommandInteraction) {
     })
 
     return interaction.reply({
-      content: "All set! ✅",
+      content: "All set!",
       ephemeral: true,
     })
   } catch (error) {
     console.error("[admin] status set:", error)
     return interaction.reply({
-      content: "Oops! Something went wrong… 🫣",
+      content: "Oops! Something went wrong…",
       ephemeral: true,
     })
   }
@@ -150,13 +150,13 @@ async function handleStatusRemove(interaction: ChatInputCommandInteraction) {
       activities: [],
     })
     return interaction.reply({
-      content: "All set! ✅",
+      content: "All set!",
       ephemeral: true,
     })
   } catch (error) {
     console.error("[admin] status remove:", error)
     return interaction.reply({
-      content: "Oops! Something went wrong… 🫣",
+      content: "Oops! Something went wrong…",
       ephemeral: true,
     })
   }
