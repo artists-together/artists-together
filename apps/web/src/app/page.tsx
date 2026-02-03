@@ -2,20 +2,17 @@
 
 import {
   motion,
-  useAnimate,
-  useMotionValueEvent,
-  useScroll,
-  useTransform,
-  wrap,
   scroll,
   stagger,
+  useAnimate,
+  useScroll,
+  useTransform,
 } from "motion/react"
 import { ComponentRef, PropsWithChildren, useEffect, useRef } from "react"
 import Cursors from "@/components/cursors"
+import Lenis from "@/components/lenis"
 import Logo from "@/components/logo"
 import Navigation from "@/components/navigation"
-import clsx from "clsx"
-import Lenis from "@/components/lenis"
 
 const CATEGORIES = [
   "drawing",

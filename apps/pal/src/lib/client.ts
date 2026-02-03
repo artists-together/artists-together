@@ -20,3 +20,27 @@ export function getGuild() {
     set: async (key) => client.guilds.fetch(key),
   })
 }
+
+export async function getRole(id: string) {
+  const guild = await getGuild()
+  return ensure(guild.roles.cache, {
+    key: id,
+    set: async () => {
+      const role = await guild.roles.fetch(id)
+      if (!role) throw Error(`Unable to fetch role ${id}`)
+      return role
+    },
+  })
+}
+
+export async function getChannel(id: string) {
+  const guild = await getGuild()
+  return ensure(guild.channels.cache, {
+    key: id,
+    set: async () => {
+      const channel = await guild.channels.fetch(id)
+      if (!channel) throw Error(`Unable to fetch channel ${id}`)
+      return channel
+    },
+  })
+}

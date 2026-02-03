@@ -2,8 +2,10 @@
   "name": "@artists-together/pal",
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development node --env-file=.env --watch src/index.ts",
-    "start": "NODE_ENV=production node --env-file-if-exists=.env src/index.ts"
+    "dev": "node --env-file=.env --watch src/index.ts",
+    "sync": "node --env-file-if-exists=.env src/scripts/sync.ts",
+    "start": "NODE_ENV=production node --env-file-if-exists=.env src/index.ts",
+    "check": "tsc --noEmit"
   },
   "dependencies": {
     "@artists-together/core": "workspace:*",

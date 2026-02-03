@@ -64,7 +64,7 @@ export default function Navigation() {
       className="fixed end-4 top-4 z-10 rounded-4 bg-outsider-violet-50 text-outsider-violet-800 shadow-button"
     >
       <ul className="flex items-center justify-center">
-        {ITEMS.map((item, index) => (
+        {ITEMS.map((item) => (
           <li key={item.label} className="size-12 flex-none">
             <a
               href={item.href}

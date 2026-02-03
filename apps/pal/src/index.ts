@@ -1,4 +1,5 @@
 import { client } from "./lib/client.ts"
+import "./features/friend-role.ts"
 import "./features/kick-quests.ts"
 import "./features/live-users.ts"
 

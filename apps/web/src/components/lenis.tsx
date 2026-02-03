@@ -1,7 +1,7 @@
 "use client"
 
 import LenisInstance from "lenis"
-import { cancelFrame, frame, FrameData, Process, resize } from "motion"
+import { cancelFrame, frame, FrameData, resize } from "motion"
 import { ComponentProps, ComponentRef, useEffect, useRef } from "react"
 
 export default function Lenis(props: ComponentProps<"div">) {
