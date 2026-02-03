@@ -21,9 +21,7 @@
     "next": "16.1.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "react-merge-refs": "^3.0.2",
     "reconnecting-websocket": "^4.4.0",
-    "server-only": "^0.0.1",
     "valibot": "^1.2.0"
   },
   "devDependencies": {

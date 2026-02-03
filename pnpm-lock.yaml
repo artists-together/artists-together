@@ -14,9 +14,6 @@ importers:
 
   apps/pal:
     dependencies:
-      '@artists-together/core':
-        specifier: workspace:*
-        version: link:../../packages/core
       cron:
         specifier: ^4.4.0
         version: 4.4.0
@@ -63,15 +60,9 @@ importers:
       react-dom:
         specifier: 19.2.3
         version: 19.2.3(react@19.2.3)
-      react-merge-refs:
-        specifier: ^3.0.2
-        version: 3.0.2(react@19.2.3)
       reconnecting-websocket:
         specifier: ^4.4.0
         version: 4.4.0
-      server-only:
-        specifier: ^0.0.1
-        version: 0.0.1
       valibot:
         specifier: ^1.2.0
         version: 1.2.0(typescript@5.9.3)
@@ -2033,14 +2024,6 @@ packages:
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
-  react-merge-refs@3.0.2:
-    resolution: {integrity: sha512-MSZAfwFfdbEvwkKWP5EI5chuLYnNUxNS7vyS0i1Jp+wtd8J4Ga2ddzhaE68aMol2Z4vCnRM/oGOo1a3V75UPlw==}
-    peerDependencies:
-      react: '>=16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0'
-    peerDependenciesMeta:
-      react:
-        optional: true
-
   react@19.2.3:
     resolution: {integrity: sha512-Ku/hhYbVjOQnXDZFv2+RibmLFGwFdeeKHFcOTlrt7xplBnya5OGn/hIRDsqDiSUcfORsDC7MPxwork8jBwsIWA==}
     engines: {node: '>=0.10.0'}
@@ -2109,9 +2092,6 @@ packages:
     resolution: {integrity: sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==}
     engines: {node: '>=10'}
     hasBin: true
-
-  server-only@0.0.1:
-    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
 
   set-function-length@1.2.2:
     resolution: {integrity: sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==}
@@ -4405,10 +4385,6 @@ snapshots:
 
   react-is@16.13.1: {}
 
-  react-merge-refs@3.0.2(react@19.2.3):
-    optionalDependencies:
-      react: 19.2.3
-
   react@19.2.3: {}
 
   read-cache@1.0.0:
@@ -4487,8 +4463,6 @@ snapshots:
   semver@6.3.1: {}
 
   semver@7.7.3: {}
-
-  server-only@0.0.1: {}
 
   set-function-length@1.2.2:
     dependencies:
