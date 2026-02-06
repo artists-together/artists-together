@@ -26,11 +26,6 @@ export default function Layout(props: LayoutProps<"/">) {
       lang="en"
       className="scroll-smooth bg-arpeggio-black-900 text-outsider-violet-50"
     >
-      <head>
-        <noscript>
-          <style>{/* TODO: rever initial text animation state here */}</style>
-        </noscript>
-      </head>
       <body
         className={clsx(
           "relative antialiased",

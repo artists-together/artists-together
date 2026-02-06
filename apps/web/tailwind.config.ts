@@ -212,6 +212,9 @@ export const screens = {
   cursor: {
     raw: "(hover: hover) and (pointer: fine)",
   },
+  noscript: {
+    raw: "(scripting: none)",
+  },
   xs: "360px",
   sm: "640px",
   md: "768px",
