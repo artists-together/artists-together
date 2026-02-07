@@ -116,7 +116,6 @@ function Hero() {
     filter: ["blur(0px)", "blur(32px)"],
     opacity: [1, 0],
     scale: [1, 5],
-    y: ["0%", "-10%"],
   })
 
   return (
@@ -183,7 +182,6 @@ function Scroll({
     ],
     opacity: [0, 1, 1, position === "last" ? 1 : 0],
     scale: [0.75, 1, 1, position === "last" ? 1 : 5],
-    y: ["0%", "0%", "0%", position === "last" ? "0%" : "-10%"],
   })
 
   return (
@@ -191,7 +189,7 @@ function Scroll({
       <motion.div
         className={clsx(
           "sticky top-0 grid h-svh place-items-center",
-          "noscript:!opacity-100 noscript:!blur-0 noscript:!scale-100 noscript:!translate-y-0",
+          "noscript:!opacity-100 noscript:!blur-0 noscript:!scale-100",
         )}
         style={style}
       >
