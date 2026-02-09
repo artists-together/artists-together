@@ -74,6 +74,7 @@ export default function Cursor() {
   }, [])
 
   useEffect(() => {
+    if (process.env.NODE_ENV === "development") return
     if (isEligibleForCursor) {
       document.documentElement.classList.add("cursor")
     } else {
