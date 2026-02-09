@@ -1,21 +1,9 @@
 # web
-- scroll animations
-- ws
-  - reconnect
-  - self
-  - others
+- menos espacio del texto "parado"
+- que no se vea como vienen de abajo los textos
+- la lista que no haga bola
+- traer las estrellas
+- paralaje al mover el cursor a logo, textos grandes y a las estrellas (a las estrellas menos)
 
 # pal
 - notify errors on channel
-- live role
-- kick guests
-- friend role
-- random avatar
-- admin
-  - extinguish
-  - send
-    - message
-    - embed
-  - status
-    - set
-    - remove

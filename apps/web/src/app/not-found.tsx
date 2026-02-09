@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <main className="h-dvh py-16 sm:py-4">
+    <main className="relative h-dvh py-16 sm:py-4">
       <h1 className="sr-only">Oh no! This page doesn&apos;t exist.</h1>
       <Image
         src={image}

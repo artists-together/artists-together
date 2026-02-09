@@ -104,6 +104,26 @@ function Particles() {
   )
 }
 
+function HeroAnchor() {
+  const scroll = useScroll()
+  const style = useTransform(scroll.scrollY, [0, 40], {
+    filter: ["blur(0px)", "blur(12px)"],
+    opacity: [1, 0],
+  })
+
+  return (
+    <div className="absolute inset-x-2 bottom-2 grid place-items-center">
+      <motion.a
+        href="#content"
+        className="rounded-3.5 p-2 text-center font-fraunces text-base font-light lowercase"
+        style={style}
+      >
+        Scroll to explore
+      </motion.a>
+    </div>
+  )
+}
+
 function Hero() {
   const ref = useRef<ComponentRef<"div">>(null)
 
@@ -150,14 +170,7 @@ function Hero() {
           </noscript>
         </div>
       </motion.div>
-      <div className="absolute inset-x-2 bottom-2 grid place-items-center">
-        <a
-          href="#content"
-          className="rounded-3.5 p-2 text-center font-fraunces text-base font-light lowercase"
-        >
-          Scroll to explore
-        </a>
-      </div>
+      <HeroAnchor />
     </div>
   )
 }
@@ -189,7 +202,7 @@ function Scroll({
       <motion.div
         className={clsx(
           "sticky top-0 grid h-svh place-items-center",
-          "noscript:!opacity-100 noscript:!blur-0 noscript:!scale-100",
+          "noscript:!scale-100 noscript:!opacity-100 noscript:!blur-0",
         )}
         style={style}
       >
