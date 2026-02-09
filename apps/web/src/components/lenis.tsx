@@ -2,21 +2,18 @@
 
 import LenisInstance from "lenis"
 import { cancelFrame, frame, FrameData, resize } from "motion"
-import { ComponentProps, ComponentRef, useEffect, useRef } from "react"
+import { ComponentProps, RefCallback, useCallback } from "react"
 
 export default function Lenis(props: ComponentProps<"div">) {
-  // const lenisRef = useRef()
-  const ref = useRef<ComponentRef<"div">>(null)
-
-  useEffect(() => {
-    if (!ref.current) return
+  const ref = useCallback<RefCallback<HTMLElement>>((element) => {
+    if (!element) return
 
     const lenis = new LenisInstance({
       autoRaf: false,
       autoResize: false,
     })
 
-    const cancelResize = resize(ref.current, () => {
+    const cancelResize = resize(element, () => {
       lenis.resize()
     })
 

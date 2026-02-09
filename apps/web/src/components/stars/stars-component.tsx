@@ -1,10 +1,24 @@
 "use client"
 
-import { Canvas, useFrame } from "@react-three/fiber"
+import { cancelFrame, frame, FrameData } from "motion"
 import { motion, useReducedMotion, useScroll, useSpring } from "motion/react"
-import { useEffect, useRef, useState } from "react"
-import type { InstancedMesh } from "three"
-import { Color, Object3D } from "three"
+import {
+  startTransition,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
+import {
+  Color,
+  InstancedMesh,
+  MeshBasicMaterial,
+  Object3D,
+  PerspectiveCamera,
+  Scene,
+  SphereGeometry,
+  WebGLRenderer,
+} from "three"
 import { colors } from "../../../tailwind.config"
 
 const COUNT = 500
@@ -28,7 +42,7 @@ function parseColor(color: string) {
     parseInt(String(r)) / 255,
     parseInt(String(g)) / 255,
     parseInt(String(b)) / 255,
-  ] as const
+  ]
 }
 
 const COLORS = [
@@ -40,103 +54,213 @@ const COLORS = [
 const tempObject = new Object3D()
 const tempColor = new Color()
 
-function Scene() {
-  const ref = useRef<InstancedMesh>(null)
-  const positions = useRef<Float32Array | null>(null)
+function createMesh() {
+  const geometry = new SphereGeometry(0.05)
+  const material = new MeshBasicMaterial({
+    color: new Color(1.5, 1.5, 1.5),
+    toneMapped: false,
+  })
+
+  return new InstancedMesh(geometry, material, COUNT)
+}
+
+function disposeMesh(mesh: InstancedMesh) {
+  mesh.geometry.dispose()
+  if (Array.isArray(mesh.material)) {
+    for (const material of mesh.material) material.dispose()
+  } else {
+    mesh.material.dispose()
+  }
+}
+
+export default function StarsVanillaThree() {
+  const [loaded, setLoaded] = useState(false)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const rendererRef = useRef<WebGLRenderer | null>(null)
+  const sceneRef = useRef<Scene | null>(null)
+  const cameraRef = useRef<PerspectiveCamera | null>(null)
+  const meshRef = useRef<InstancedMesh | null>(null)
+  const positionsRef = useRef<Float32Array | null>(null)
+  const frameActiveRef = useRef(false)
+  const runningRef = useRef(false)
+  const lastTimeRef = useRef<number | null>(null)
   const prefersReducedMotion = useReducedMotion()
 
-  useEffect(() => {
-    if (!ref.current) return
-
-    const t = new Object3D()
-    const nextPositions = new Float32Array(COUNT * 3)
-    let rnd = 0
-    for (let i = 0; i < COUNT; i++) {
-      const x = (Math.random() - 0.5) * XY_BOUNDS
-      const y = (Math.random() - 0.5) * XY_BOUNDS
-      const z = (Math.random() - 0.5) * Z_BOUNDS
-      const index = i * 3
-
-      nextPositions[index] = x
-      nextPositions[index + 1] = y
-      nextPositions[index + 2] = z
-
-      t.position.set(x, y, z)
-      t.updateMatrix()
-      const color = COLORS[rnd]
-      if (!color) continue
-      tempColor.setRGB(color[0], color[1], color[2])
-      rnd = (rnd + 1) % COLORS.length
-      ref.current.setMatrixAt(i, t.matrix)
-      ref.current.setColorAt(i, tempColor)
-    }
-
-    positions.current = nextPositions
-    ref.current.instanceMatrix.needsUpdate = true
-    if (ref.current.instanceColor) {
-      ref.current.instanceColor.needsUpdate = true
-    }
-  }, [])
-
-  const { scrollYProgress } = useScroll()
-  const y = useSpring(scrollYProgress, {
+  const scroll = useScroll()
+  const y = useSpring(scroll.scrollYProgress, {
     damping: 50,
     stiffness: 400,
   })
 
-  useFrame((_, delta) => {
-    if (!ref.current) return
-    if (prefersReducedMotion) return
-    const currentPositions = positions.current
-    if (!currentPositions) return
+  const renderFrame = useCallback(
+    (data: FrameData) => {
+      if (!runningRef.current) return
+      const renderer = rendererRef.current
+      const scene = sceneRef.current
+      const camera = cameraRef.current
+      const mesh = meshRef.current
+      const positions = positionsRef.current
 
-    const velocity = Math.abs(y.getVelocity() / 3)
+      if (!renderer || !scene || !camera || !mesh || !positions) return
 
-    for (let i = 0; i < COUNT; i++) {
-      // update scale
-      tempObject.scale.set(0.5, 0.5, Math.max(0.5, velocity * MAX_SCALE_FACTOR))
+      const time = data.timestamp
+      const lastTime = lastTimeRef.current ?? time
+      const delta = (time - lastTime) / 1000
+      lastTimeRef.current = time
 
-      // update position
-      const index = i * 3
-      const x = currentPositions[index]
-      const yPos = currentPositions[index + 1]
-      let z = currentPositions[index + 2]
+      const velocity = Math.abs(y.getVelocity() / 3)
 
-      if (z > Z_BOUNDS / 2) {
-        const max = -Z_BOUNDS / 2
-        z = Math.random() * max
-      } else {
-        z += Math.max(delta, velocity * MAX_SPEED_FACTOR)
+      for (let i = 0; i < COUNT; i++) {
+        tempObject.scale.set(
+          0.5,
+          0.5,
+          Math.max(0.5, velocity * MAX_SCALE_FACTOR),
+        )
+
+        const index = i * 3
+        const x = positions[index]
+        const yPos = positions[index + 1]
+        let z = positions[index + 2]
+
+        if (z > Z_BOUNDS / 2) {
+          const max = -Z_BOUNDS / 2
+          z = Math.random() * max
+        } else {
+          z += Math.max(delta, velocity * MAX_SPEED_FACTOR)
+        }
+
+        positions[index + 2] = z
+
+        tempObject.position.set(x, yPos, z)
+        tempObject.updateMatrix()
+        mesh.setMatrixAt(i, tempObject.matrix)
       }
 
-      currentPositions[index + 2] = z
+      mesh.instanceMatrix.needsUpdate = true
+      renderer.render(scene, camera)
+    },
+    [y],
+  )
 
-      tempObject.position.set(x, yPos, z)
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
 
-      // apply transforms
-      tempObject.updateMatrix()
-      ref.current.setMatrixAt(i, tempObject.matrix)
+    const renderer = new WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+    })
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.setClearColor(0x000000, 0)
+
+    const scene = new Scene()
+    const camera = new PerspectiveCamera(75, 1, 0.1, 200)
+    camera.position.z = 50
+
+    const mesh = createMesh()
+    scene.add(mesh)
+
+    const positions = new Float32Array(COUNT * 3)
+    const seedObject = new Object3D()
+    let rnd = 0
+    for (let i = 0; i < COUNT; i++) {
+      const x = (Math.random() - 0.5) * XY_BOUNDS
+      const yPos = (Math.random() - 0.5) * XY_BOUNDS
+      const z = (Math.random() - 0.5) * Z_BOUNDS
+      const index = i * 3
+
+      positions[index] = x
+      positions[index + 1] = yPos
+      positions[index + 2] = z
+
+      seedObject.position.set(x, yPos, z)
+      seedObject.scale.set(0.5, 0.5, 0.5)
+      seedObject.updateMatrix()
+
+      const color = COLORS[rnd]
+      tempColor.setRGB(color[0], color[1], color[2])
+      rnd = (rnd + 1) % COLORS.length
+
+      mesh.setMatrixAt(i, seedObject.matrix)
+      mesh.setColorAt(i, tempColor)
     }
 
-    ref.current.instanceMatrix.needsUpdate = true
-  })
+    mesh.instanceMatrix.needsUpdate = true
+    if (mesh.instanceColor) {
+      mesh.instanceColor.needsUpdate = true
+    }
 
-  return (
-    <>
-      <instancedMesh
-        ref={ref}
-        args={[undefined, undefined, COUNT]}
-        matrixAutoUpdate
-      >
-        <sphereGeometry args={[0.05]} />
-        <meshBasicMaterial color={[1.5, 1.5, 1.5]} toneMapped={false} />
-      </instancedMesh>
-    </>
-  )
-}
+    const resize = () => {
+      const { clientWidth, clientHeight } = canvas
+      if (clientWidth === 0 || clientHeight === 0) return
+      camera.aspect = clientWidth / clientHeight
+      camera.updateProjectionMatrix()
+      renderer.setSize(clientWidth, clientHeight, false)
+      renderer.render(scene, camera)
+    }
 
-export default function Stars() {
-  const [loaded, setLoaded] = useState(false)
+    rendererRef.current = renderer
+    sceneRef.current = scene
+    cameraRef.current = camera
+    meshRef.current = mesh
+    positionsRef.current = positions
+
+    resize()
+    startTransition(() => setLoaded(true))
+
+    window.addEventListener("resize", resize)
+
+    return () => {
+      window.removeEventListener("resize", resize)
+      cancelFrame(renderFrame)
+      runningRef.current = false
+      lastTimeRef.current = null
+      disposeMesh(mesh)
+      renderer.dispose()
+      rendererRef.current = null
+      sceneRef.current = null
+      cameraRef.current = null
+      meshRef.current = null
+      positionsRef.current = null
+    }
+  }, [renderFrame])
+
+  useEffect(() => {
+    const renderer = rendererRef.current
+    const scene = sceneRef.current
+    const camera = cameraRef.current
+    if (!loaded || !renderer || !scene || !camera) return
+
+    if (prefersReducedMotion) {
+      runningRef.current = false
+      if (frameActiveRef.current) {
+        cancelFrame(renderFrame)
+        frameActiveRef.current = false
+      }
+      lastTimeRef.current = null
+      renderer.render(scene, camera)
+      return
+    }
+
+    if (!runningRef.current) {
+      runningRef.current = true
+      if (!frameActiveRef.current) {
+        frameActiveRef.current = true
+        frame.update(renderFrame, true)
+      }
+    }
+
+    return () => {
+      runningRef.current = false
+      if (frameActiveRef.current) {
+        cancelFrame(renderFrame)
+        frameActiveRef.current = false
+      }
+      lastTimeRef.current = null
+    }
+  }, [loaded, prefersReducedMotion, renderFrame])
 
   return (
     <motion.div
@@ -146,12 +270,7 @@ export default function Stars() {
       aria-hidden
       className="pointer-events-none fixed inset-0 -z-10"
     >
-      <Canvas
-        className="absolute inset-0 size-full"
-        onCreated={() => setLoaded(true)}
-      >
-        <Scene />
-      </Canvas>
+      <canvas ref={canvasRef} className="absolute inset-0 size-full" />
     </motion.div>
   )
 }
