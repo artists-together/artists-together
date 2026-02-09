@@ -14,6 +14,7 @@ import Cursors from "@/components/cursors"
 import Lenis from "@/components/lenis"
 import Logo from "@/components/logo"
 import Navigation from "@/components/navigation"
+import Stars from "@/components/stars"
 
 const CATEGORIES = [
   "drawing",
@@ -218,36 +219,39 @@ function Scroll({
 
 export default function Page() {
   return (
-    <Lenis>
-      <header className="relative">
-        <Navigation />
-        <Hero />
-      </header>
-      <main
-        id="content"
-        className="relative text-center font-fraunces font-light sm:text-[2.083vw]"
-      >
-        <Scroll>
-          Artists Together is a worldwide, inclusive, and diverse
-          <br />
-          community for all kinds of artists and skill levels.
-        </Scroll>
-        <Scroll>
-          We want to give artists from around the globe a place to share,
-          <br /> learn, and talk with other creative folks.
-        </Scroll>
-        <Scroll>
-          We celebrate creativity, diversity,
-          <br /> entertainment, and learning.
-        </Scroll>
-        <Particles />
-        <Scroll>
-          So, create, share, and enjoy,
-          <br /> because we are glad to have you here.
-        </Scroll>
-        <Scroll position="last">Artists, together.</Scroll>
-      </main>
-      <Cursors />
-    </Lenis>
+    <>
+      <Stars />
+      <Lenis>
+        <header className="relative">
+          <Navigation />
+          <Hero />
+        </header>
+        <main
+          id="content"
+          className="relative text-center font-fraunces font-light sm:text-[2.083vw]"
+        >
+          <Scroll>
+            Artists Together is a worldwide, inclusive, and diverse
+            <br />
+            community for all kinds of artists and skill levels.
+          </Scroll>
+          <Scroll>
+            We want to give artists from around the globe a place to share,
+            <br /> learn, and talk with other creative folks.
+          </Scroll>
+          <Scroll>
+            We celebrate creativity, diversity,
+            <br /> entertainment, and learning.
+          </Scroll>
+          <Particles />
+          <Scroll>
+            So, create, share, and enjoy,
+            <br /> because we are glad to have you here.
+          </Scroll>
+          <Scroll position="last">Artists, together.</Scroll>
+        </main>
+        <Cursors />
+      </Lenis>
+    </>
   )
 }
