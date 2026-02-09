@@ -134,13 +134,13 @@ function Hero() {
   })
 
   const style = useTransform(scroll.scrollYProgress, [0.5, 0.75], {
-    filter: ["blur(0px)", "blur(32px)"],
-    opacity: [1, 0],
-    scale: [1, 5],
+    // filter: ["blur(0px)", "blur(32px)"],
+    // opacity: [1, 0],
+    // scale: [1, 5],
   })
 
   return (
-    <div ref={ref} className="relative -mb-[100svh] overflow-x-clip">
+    <div ref={ref} className="scroll-pin relative overflow-x-clip">
       <h1 className="sr-only">Artists Together</h1>
       <motion.div className="grid h-svh place-items-center" style={style}>
         <div className="relative mx-auto aspect-[200/108] w-full max-w-[28.75rem]">
@@ -184,35 +184,32 @@ function Scroll({
 
   const scroll = useScroll({
     target: ref,
-    offset: ["start center", "end center"],
+    offset: ["start start", "end end"],
   })
 
-  const style = useTransform(scroll.scrollYProgress, [0, 0.25, 0.5, 0.75], {
+  const style = useTransform(scroll.scrollYProgress, [0, 0.25, 0.5, 0.75, 1], {
     filter: [
       "blur(32px)",
+      "blur(16px)",
       "blur(0px)",
       "blur(0px)",
       position === "last" ? "blur(0px)" : "blur(32px)",
     ],
-    opacity: [0, 1, 1, position === "last" ? 1 : 0],
-    scale: [0.75, 1, 1, position === "last" ? 1 : 5],
+    opacity: [0, 0.5, 1, 0.75, position === "last" ? 1 : 0],
+    scale: [0, 0.5, 1, 1.5, position === "last" ? 1 : 2],
   })
 
   return (
-    <div className="relative -mb-[300svh] h-[500svh] overflow-x-clip last:h-[300svh] [&:nth-last-child(2)]:-mb-[200svh]">
+    <div ref={ref} className="relative -mb-[250svh] h-[500svh] overflow-x-clip">
       <motion.div
         className={clsx(
           "sticky top-0 grid h-svh place-items-center",
-          "noscript:!scale-100 noscript:!opacity-100 noscript:!blur-0",
+          "noscript:mb-0 noscript:h-svh noscript:!scale-100 noscript:!opacity-100 noscript:!blur-0",
         )}
         style={style}
       >
         {children}
       </motion.div>
-      <div
-        ref={ref}
-        className="pointer-events-none absolute inset-x-0 bottom-0 top-0"
-      />
     </div>
   )
 }
@@ -243,7 +240,7 @@ export default function Page() {
             We celebrate creativity, diversity,
             <br /> entertainment, and learning.
           </Scroll>
-          <Particles />
+          {/*<Particles />*/}
           <Scroll>
             So, create, share, and enjoy,
             <br /> because we are glad to have you here.
