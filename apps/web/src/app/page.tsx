@@ -240,7 +240,7 @@ export default function Page() {
             We celebrate creativity, diversity,
             <br /> entertainment, and learning.
           </Scroll>
-          <Particles />
+          {/*<Particles />*/}
           <Scroll>
             So, create, share, and enjoy,
             <br /> because we are glad to have you here.
