@@ -1,5 +1,5 @@
 import { Room } from "@artists-together/core/ws"
-import { atom } from "nanostores"
+import { atom, computed } from "nanostores"
 import { onMessage } from "./ws"
 
 export const atomRoom = atom<Room>({})
@@ -36,3 +36,12 @@ export function getDocumentSize() {
   atomDocumentSize.set(rect)
   return rect
 }
+
+export const atomCursorX = atom(0.5)
+
+export const atomCursorY = atom(0.5)
+
+export const atomCursor = computed(
+  [atomCursorX, atomCursorY],
+  (x, y) => [x, y] as const,
+)

@@ -1,4 +1,7 @@
 import { SpringOptions, Transition, Variants } from "motion"
+import { MotionStyle, useReducedMotion, useSpring } from "motion/react"
+import { useEffect } from "react"
+import { atomCursor } from "./cursors"
 
 /**
  *
@@ -40,3 +43,30 @@ export const cursorPresenceVariants = {
     },
   },
 } satisfies Variants
+
+export function useCursorParallax({
+  spring,
+  amount = 1,
+}: {
+  spring?: SpringOptions
+  amount?: number
+}) {
+  const reducedMotion = useReducedMotion()
+  const x = useSpring("0%", spring)
+  const y = useSpring("0%", spring)
+
+  useEffect(() => {
+    if (reducedMotion) {
+      x.set("0%")
+      y.set("0%")
+      return
+    }
+
+    return atomCursor.listen(([cursorX, cursorY]) => {
+      x.set(`${-cursorX * amount}%`)
+      y.set(`${-cursorY * amount}%`)
+    })
+  }, [amount, reducedMotion, x, y])
+
+  return { x, y } satisfies MotionStyle
+}

@@ -18,7 +18,13 @@ import {
 import { computed } from "nanostores"
 import { useEffect, useState } from "react"
 import Icon from "@/components/icon"
-import { atomDocumentSize, atomRoom, getDocumentSize } from "@/lib/cursors"
+import {
+  atomCursorX,
+  atomCursorY,
+  atomDocumentSize,
+  atomRoom,
+  getDocumentSize,
+} from "@/lib/cursors"
 import {
   createCriticallyDampedSpring,
   cursorPresenceVariants,
@@ -72,6 +78,40 @@ export default function Cursor() {
       atomDocumentSize.set(rect)
     })
   }, [])
+
+  useEffect(() => {
+    if (state === "hide") {
+      atomCursorX.set(0.5)
+      atomCursorY.set(0.5)
+      return
+    }
+
+    const rect = {
+      height: window.innerHeight,
+      width: window.innerWidth,
+    }
+
+    const unsubscribeResize = resize(({ height, width }) => {
+      rect.height = height
+      rect.width = width
+    })
+
+    const unsubscribeX = x.on("change", (x) => {
+      const w = rect.width / 2
+      atomCursorX.set((x - w) / w)
+    })
+
+    const unsubscribeY = y.on("change", (y) => {
+      const h = rect.height / 2
+      atomCursorY.set((y - h) / h)
+    })
+
+    return () => {
+      unsubscribeResize()
+      unsubscribeX()
+      unsubscribeY()
+    }
+  }, [state, x, y])
 
   useEffect(() => {
     if (process.env.NODE_ENV === "development") return

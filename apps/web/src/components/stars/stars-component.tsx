@@ -19,6 +19,7 @@ import {
   SphereGeometry,
   WebGLRenderer,
 } from "three"
+import { useCursorParallax } from "@/lib/motion"
 import { colors } from "../../../tailwind.config"
 
 const COUNT = 500
@@ -84,7 +85,7 @@ export default function StarsVanillaThree() {
   const frameActiveRef = useRef(false)
   const runningRef = useRef(false)
   const lastTimeRef = useRef<number | null>(null)
-  const prefersReducedMotion = useReducedMotion()
+  const reducedMotion = useReducedMotion()
 
   const scroll = useScroll()
   const y = useSpring(scroll.scrollYProgress, {
@@ -233,7 +234,7 @@ export default function StarsVanillaThree() {
     const camera = cameraRef.current
     if (!loaded || !renderer || !scene || !camera) return
 
-    if (prefersReducedMotion) {
+    if (reducedMotion) {
       runningRef.current = false
       if (frameActiveRef.current) {
         cancelFrame(renderFrame)
@@ -260,7 +261,9 @@ export default function StarsVanillaThree() {
       }
       lastTimeRef.current = null
     }
-  }, [loaded, prefersReducedMotion, renderFrame])
+  }, [loaded, reducedMotion, renderFrame])
+
+  const parallaxStyle = useCursorParallax({ amount: 0.7 })
 
   return (
     <motion.div
@@ -269,6 +272,7 @@ export default function StarsVanillaThree() {
       transition={{ duration: 1.75, delay: 0.3 }}
       aria-hidden
       className="pointer-events-none fixed inset-0 -z-10"
+      style={parallaxStyle}
     >
       <canvas ref={canvasRef} className="absolute inset-0 size-full" />
     </motion.div>

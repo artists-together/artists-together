@@ -22,6 +22,7 @@ import Lenis from "@/components/lenis"
 import Logo from "@/components/logo"
 import Navigation from "@/components/navigation"
 import Stars from "@/components/stars"
+import { useCursorParallax } from "@/lib/motion"
 
 const CATEGORIES = [
   "drawing",
@@ -160,7 +161,7 @@ function Scroll({
   position,
 }: PropsWithChildren<{ debug?: boolean; position?: "last" }>) {
   const ref = useRef<ComponentRef<"div">>(null)
-
+  const parallaxStyle = useCursorParallax({ amount: 0.3 })
   const scroll = useScroll({
     target: ref,
     offset: ["start start", "end end"],
@@ -189,7 +190,7 @@ function Scroll({
   )
 
   return (
-    <div
+    <motion.div
       ref={ref}
       className={clsx(
         "relative overflow-x-clip noscript:mb-0 noscript:h-svh",
@@ -201,11 +202,14 @@ function Scroll({
           "sticky top-0 grid h-svh place-items-center",
           "noscript:mb-0 noscript:h-svh noscript:!scale-100 noscript:!opacity-100 noscript:!blur-0",
         )}
-        style={style}
+        style={{
+          ...style,
+          ...parallaxStyle,
+        }}
       >
         {children}
       </motion.div>
-    </div>
+    </motion.div>
   )
 }
 
