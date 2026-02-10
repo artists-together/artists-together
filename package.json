@@ -1,13 +1,14 @@
 {
   "name": "artists-together",
   "type": "module",
-  "packageManager": "pnpm@9.14.2",
-  "dependencies": {
-    "sst": "catalog:"
-  },
+  "packageManager": "pnpm@9.15.9",
   "devDependencies": {
-    "@types/aws-lambda": "8.10.149",
-    "ts-sst-plugin": "^1.0.4",
-    "typescript": "catalog:"
+    "prettier": "^3.7.4"
+  },
+  "prettier": {
+    "semi": false
+  },
+  "engines": {
+    "node": ">=25"
   }
 }
