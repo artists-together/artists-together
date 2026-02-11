@@ -1,7 +1,6 @@
 import { client } from "./lib/client.ts"
 import "./features/admin.ts"
 import "./features/friend-role.ts"
-import "./features/kick-quests.ts"
 import "./features/live-users.ts"
 
 client.once("clientReady", () =>
