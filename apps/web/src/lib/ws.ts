@@ -6,16 +6,10 @@ import ReconnectingWebSocket from "reconnecting-websocket"
 export const webSocket =
   typeof document === "undefined"
     ? undefined
-    : new ReconnectingWebSocket(
-        process.env.NODE_ENV === "development"
-          ? "ws://localhost:8080"
-          : "ws://localhost:8080",
-        [],
-        {
-          connectionTimeout: 1000,
-          maxRetries: 10,
-        },
-      )
+    : new ReconnectingWebSocket(String(process.env.NEXT_PUBLIC_WS_URL), [], {
+        connectionTimeout: 1000,
+        maxRetries: 10,
+      })
 
 export function onMessage<T extends keyof Messages["server"]>(
   key: T,
