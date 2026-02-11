@@ -8,10 +8,48 @@ const INACTIVE_THRESHOLD_MONTHS = 4
 
 const INACTIVE_SCAN_INTERVAL_MS = 1000 * 60 * 60 * 12
 
+const PRESENCE_SCAN_INTERVAL_MS =
+  process.env.NODE_ENV === "development" ? 1000 * 60 : 1000 * 60 * 60 * 12
+
 function getInactiveCutoffMs(nowMs: number) {
   const cutoff = new Date(nowMs)
   cutoff.setMonth(cutoff.getMonth() - INACTIVE_THRESHOLD_MONTHS)
   return cutoff.getTime()
+}
+
+function upsertLastOnline(userId: string, nowMs: number) {
+  return connectDatabase()
+    .insert(inactiveUserActivity)
+    .values({ userId, lastOnlineAt: nowMs })
+    .onConflictDoUpdate({
+      target: inactiveUserActivity.userId,
+      set: { lastOnlineAt: nowMs },
+    })
+    .run()
+}
+
+async function seedOnlineUsers() {
+  const guild = await getGuild()
+  const nowMs = Date.now()
+
+  try {
+    const members = await guild.members.fetch({
+      withPresences: true,
+    })
+
+    let updated = 0
+    for (const member of members.values()) {
+      if (member.user.bot) continue
+      if (!member.presence) continue
+      if (member.presence.status === "offline") continue
+      upsertLastOnline(member.user.id, nowMs)
+      updated += 1
+    }
+
+    console.log(`[inactive-users] seed online ${updated}`)
+  } catch (error) {
+    console.error("[inactive-users] seed online failed", error)
+  }
 }
 
 let isInactiveScanRunning = false
@@ -67,22 +105,8 @@ client.on("presenceUpdate", async (_, presenceNew) => {
 
   if (presenceNew.status === "offline") return
 
-  const now = Date.now()
-  const database = connectDatabase()
-
-  database
-    .insert(inactiveUserActivity)
-    .values({
-      userId: presenceNew.user.id,
-      lastOnlineAt: now,
-    })
-    .onConflictDoUpdate({
-      target: inactiveUserActivity.userId,
-      set: {
-        lastOnlineAt: now,
-      },
-    })
-    .run()
+  const nowMs = Date.now()
+  upsertLastOnline(presenceNew.user.id, nowMs)
 
   if (presenceNew.member.roles.cache.has(ROLE.INACTIVE)) {
     console.log("[inactive-users] remove inactive", presenceNew.user.username)
@@ -91,8 +115,12 @@ client.on("presenceUpdate", async (_, presenceNew) => {
 })
 
 client.on("clientReady", () => {
-  void scanInactiveUsers()
+  seedOnlineUsers()
+  scanInactiveUsers()
   setInterval(() => {
-    void scanInactiveUsers()
+    seedOnlineUsers()
+  }, PRESENCE_SCAN_INTERVAL_MS)
+  setInterval(() => {
+    scanInactiveUsers()
   }, INACTIVE_SCAN_INTERVAL_MS)
 })
