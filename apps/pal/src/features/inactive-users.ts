@@ -32,6 +32,10 @@ async function scanInactiveUsers() {
       .where(lt(inactiveUserActivity.lastOnlineAt, cutoffMs))
       .all()
 
+    console.log(
+      `[inactive-users] scanning ${inactiveUsers.length} user${inactiveUsers.length === 1 ? "" : "s"}`,
+    )
+
     for (const inactiveUser of inactiveUsers) {
       try {
         const member = await guild.members.fetch(inactiveUser.userId)
