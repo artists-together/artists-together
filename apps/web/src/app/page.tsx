@@ -103,14 +103,6 @@ const PARTICLE_OFFSET = [
   { x: 54, y: 20 },
 ]
 
-function getParticleTransform(index: number) {
-  const offset = PARTICLE_OFFSET[index % PARTICLE_OFFSET.length]
-  return {
-    "--x": `calc(${offset.x} + 5%)`,
-    "--y": offset.y,
-  } as CSSProperties
-}
-
 function Particles() {
   const [ref, animate] = useAnimate()
   const parallaxStyle = useCursorParallax({ amount: 0.3 })
