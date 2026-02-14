@@ -45,6 +45,12 @@ const CATEGORIES = [
   "photographing",
 ]
 
+const CATEGORY_COLORS = [
+  "text-plushie-pink-400",
+  "text-microscopic-green-400",
+  "text-smiley-yellow-400",
+]
+
 function mulberry32(seed: number) {
   let t = seed
   return () => {
@@ -166,7 +172,14 @@ function Particles() {
                 } as CSSProperties
               }
             >
-              <span className="inline-block text-center">{category}</span>
+              <span
+                className={clsx(
+                  "inline-block text-center",
+                  CATEGORY_COLORS[index % CATEGORY_COLORS.length],
+                )}
+              >
+                {category}
+              </span>
             </li>
           )
         })}
@@ -213,7 +226,7 @@ function Hero() {
   return (
     <div
       ref={ref}
-      className="relative -mb-[250svh] h-[250svh] overflow-x-clip noscript:mb-0 noscript:h-svh"
+      className="relative -mb-[250svh] h-[250svh] overflow-x-clip text-smiley-yellow-400 noscript:mb-0 noscript:h-svh"
     >
       <h1 className="sr-only">Artists Together</h1>
       <motion.div
@@ -242,7 +255,12 @@ function Hero() {
 function Scroll({
   children,
   position,
-}: PropsWithChildren<{ debug?: boolean; position?: "last" }>) {
+  className,
+}: PropsWithChildren<{
+  debug?: boolean
+  position?: "last"
+  className?: string
+}>) {
   const ref = useRef<ComponentRef<"div">>(null)
   const parallaxStyle = useCursorParallax({ amount: 0.3 })
   const scroll = useScroll({
@@ -287,6 +305,7 @@ function Scroll({
       className={clsx(
         "relative overflow-x-clip noscript:mb-0 noscript:h-svh",
         position === "last" ? "h-[250svh]" : "-mb-[250svh] h-[500svh]",
+        className,
       )}
     >
       <motion.div
@@ -320,30 +339,32 @@ export default function Page() {
           id="content"
           className="relative text-center font-fraunces text-[4.75vw] font-light sm:text-[2.083vw]"
         >
-          <Scroll>
+          <Scroll className="text-plushie-pink-400">
             Artists Together is a worldwide,
             <br className="sm:hidden" /> inclusive, and diverse
             <br className="hidden sm:block" /> community{" "}
             <br className="sm:hidden" />
             for all kinds of artists and skill levels.
           </Scroll>
-          <Scroll>
+          <Scroll className="text-microscopic-green-400">
             We want to give artists <br className="sm:hidden" />
             from around the globe a place to share,
             <br className="hidden sm:block" />
             <br className="sm:hidden" /> learn, and talk with other creative
             folks.
           </Scroll>
-          <Scroll>
+          <Scroll className="text-smiley-yellow-400">
             We celebrate creativity, diversity,
             <br /> entertainment, and learning.
           </Scroll>
           <Particles />
-          <Scroll>
+          <Scroll className="text-microscopic-green-400">
             So, create, share, and enjoy,
             <br /> because we are glad to have you here.
           </Scroll>
-          <Scroll position="last">Artists, together.</Scroll>
+          <Scroll className="text-smiley-yellow-400" position="last">
+            Artists, together.
+          </Scroll>
         </main>
         <Cursors />
       </Lenis>
