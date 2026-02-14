@@ -8,8 +8,7 @@ const INACTIVE_THRESHOLD_MONTHS = 4
 
 const INACTIVE_SCAN_INTERVAL_MS = 1000 * 60 * 60 * 12
 
-const PRESENCE_SCAN_INTERVAL_MS =
-  process.env.NODE_ENV === "development" ? 1000 * 60 : 1000 * 60 * 60 * 12
+const PRESENCE_SCAN_INTERVAL_MS = 1000 * 60 * 60 * 12
 
 function getInactiveCutoffMs(nowMs: number) {
   const cutoff = new Date(nowMs)
@@ -102,7 +101,6 @@ client.on("presenceUpdate", async (_, presenceNew) => {
   if (!presenceNew.user) return
   if (!presenceNew.member) return
   if (presenceNew.user.bot) return
-
   if (presenceNew.status === "offline") return
 
   const nowMs = Date.now()

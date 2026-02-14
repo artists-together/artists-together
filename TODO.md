@@ -1,6 +1,6 @@
 # web
-- la lista que no haga bola
-- paralaje al mover el cursor a logo, textos grandes y a las estrellas (a las estrellas menos)
+- intentar que el texto "pase" por la pantalla y no desaparezca antes
 
 # pal
+- inactive users publicar con 1 dia de threshold para probar
 - notify errors on channel
