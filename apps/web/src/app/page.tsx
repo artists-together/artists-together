@@ -5,6 +5,7 @@ import { useControls } from "leva"
 import {
   motion,
   scroll,
+  transform,
   useAnimate,
   useScroll,
   useTransform,
@@ -183,7 +184,7 @@ function HeroAnchor() {
   })
 
   return (
-    <div className="fixed inset-x-2 bottom-2 grid place-items-center">
+    <div className="fixed inset-x-2 bottom-2 z-10 grid place-items-center">
       <motion.a
         href="#content"
         className="rounded-3.5 p-2 text-center font-fraunces text-base font-light lowercase"
@@ -250,25 +251,34 @@ function Scroll({
     offset: ["start start", "end end"],
   })
 
+  const blur = useTransform(
+    scroll.scrollYProgress,
+    position === "last" ? [0, 1] : [0, 0.25, 0.5, 0.6, 1],
+    {
+      filter:
+        position === "last"
+          ? ["blur(32px)", "blur(0px)"]
+          : [
+              "blur(32px)",
+              "blur(16px)",
+              "blur(0px)",
+              "blur(0px)",
+              "blur(48px)",
+            ],
+    },
+  )
+
   const style = useTransform(
     scroll.scrollYProgress,
     position === "last" ? [0, 1] : [0, 0.25, 0.5, 0.75, 1],
     position === "last"
       ? {
-          filter: ["blur(32px)", "blur(0px)"],
           opacity: [0, 1],
           scale: [0, 1],
         }
       : {
-          filter: [
-            "blur(32px)",
-            "blur(16px)",
-            "blur(0px)",
-            "blur(0px)",
-            "blur(32px)",
-          ],
           opacity: [0, 0.5, 1, 0.5, 0],
-          scale: [0, 0.5, 1, 1.5, 2],
+          scale: [0, 0.5, 1, 2.5, 5],
         },
   )
 
@@ -287,6 +297,7 @@ function Scroll({
         )}
         style={{
           ...style,
+          ...blur,
           ...parallaxStyle,
         }}
       >
