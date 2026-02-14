@@ -147,7 +147,7 @@ function Particles() {
   return (
     <div
       ref={ref}
-      className="relative -mb-[250svh] h-[1000svh] overflow-x-clip"
+      className="relative -mb-[250svh] -mt-[350svh] h-[1000svh] overflow-x-clip"
     >
       <motion.ul
         className="sticky top-0 flex h-screen flex-col items-start"
