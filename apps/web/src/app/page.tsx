@@ -89,24 +89,24 @@ const PARTICLE_ANIMATION_ORDER = createShuffledOrder(CATEGORIES.length, 913)
 const PARTICLE_ANIMATION_RANK = createOrderRank(PARTICLE_ANIMATION_ORDER)
 
 const PARTICLE_OFFSET = [
-  { x: 6, y: -2 },
-  { x: 58, y: -10 },
-  { x: 22, y: 10 },
-  { x: 64, y: -5 },
-  { x: 40, y: -2.5 },
-  { x: 70, y: 1.5 },
-  { x: 14, y: -1.0 },
-  { x: 52, y: 35 },
-  { x: 28, y: 45 },
-  { x: 66, y: -3.0 },
-  { x: 8, y: 30 },
-  { x: 46, y: -1.5 },
-  { x: 32, y: 5 },
-  { x: 60, y: -4.5 },
-  { x: 18, y: 40 },
-  { x: 72, y: 25 },
-  { x: 36, y: -3.5 },
-  { x: 54, y: 20 },
+  { x: 35, y: 19 },
+  { x: -36, y: 18 },
+  { x: 34, y: 87 },
+  { x: 28, y: 9 },
+  { x: 20, y: 60 },
+  { x: -11, y: 80 },
+  { x: -32, y: 16 },
+  { x: -28, y: 60 },
+  { x: 8, y: 24 },
+  { x: 23, y: 46 },
+  { x: 17, y: 32 },
+  { x: 12, y: 83 },
+  { x: 4, y: 52 },
+  { x: -40, y: 85 },
+  { x: 0, y: 50 },
+  { x: -11, y: 8 },
+  { x: 27, y: 69 },
+  { x: -19, y: 40 },
 ]
 
 function Particles() {
@@ -155,32 +155,29 @@ function Particles() {
       ref={ref}
       className="relative -mb-[250svh] -mt-[350svh] h-[1000svh] overflow-x-clip"
     >
-      <motion.ul
-        className="sticky top-0 flex h-screen flex-col items-start"
-        style={parallaxStyle}
-      >
+      <motion.ul className="sticky top-0 h-svh" style={parallaxStyle}>
         {CATEGORIES.map((category, index) => {
           const offset = controlsArray[index % controlsArray.length]
           return (
-            <li
+            <motion.li
               key={category}
-              className="relative left-[--x] top-[--y]"
+              className="absolute inset-0"
               style={
                 {
-                  "--x": `calc(${offset.x} + 5%)`,
-                  "--y": offset.y,
+                  x: offset.x,
+                  y: offset.y,
                 } as CSSProperties
               }
             >
               <span
                 className={clsx(
-                  "inline-block text-center",
+                  "inline-block -translate-y-1/2 text-center",
                   CATEGORY_COLORS[index % CATEGORY_COLORS.length],
                 )}
               >
                 {category}
               </span>
-            </li>
+            </motion.li>
           )
         })}
       </motion.ul>
