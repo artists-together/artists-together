@@ -47,9 +47,9 @@ function parseColor(color: string) {
 }
 
 const COLORS = [
-  parseColor(colors["arpeggio-black"][500]),
-  parseColor(colors["smiley-yellow"][200]),
-  parseColor(colors["microscopic-green"][300]),
+  parseColor(colors["plushie-pink"][500]),
+  parseColor(colors["smiley-yellow"][500]),
+  parseColor(colors["microscopic-green"][500]),
 ]
 
 const tempObject = new Object3D()
@@ -113,9 +113,9 @@ export default function StarsVanillaThree() {
 
       for (let i = 0; i < COUNT; i++) {
         tempObject.scale.set(
-          0.5,
-          0.5,
-          Math.max(0.5, velocity * MAX_SCALE_FACTOR),
+          0.75,
+          0.75,
+          Math.max(0.75, velocity * MAX_SCALE_FACTOR),
         )
 
         const index = i * 3
@@ -271,7 +271,7 @@ export default function StarsVanillaThree() {
       animate={{ opacity: loaded ? 1 : 0 }}
       transition={{ duration: 1.75, delay: 0.3 }}
       aria-hidden
-      className="pointer-events-none fixed inset-0 -z-10"
+      className="pointer-events-none fixed inset-0"
       style={parallaxStyle}
     >
       <canvas ref={canvasRef} className="absolute inset-0 size-full" />
