@@ -1,7 +1,10 @@
 {
   "name": "artists-together",
   "type": "module",
-  "packageManager": "pnpm@9.15.9",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "devDependencies": {
     "prettier": "^3.7.4"
   },
