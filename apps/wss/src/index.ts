@@ -3,7 +3,12 @@ import { createHash } from "crypto"
 import { WebSocketServer, WebSocket } from "ws"
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 8080
-const ALLOWED_ORIGINS = new Set(["https://www.artiststogether.online"])
+
+const ALLOWED_ORIGINS = new Set([
+  "https://www.artiststogether.online",
+  "https://artists-together.vercel.app",
+])
+
 const MAX_PAYLOAD_KB = 1024
 const MAX_CONNECTIONS = 25
 const MAX_CONNECTIONS_PER_IP = 5
