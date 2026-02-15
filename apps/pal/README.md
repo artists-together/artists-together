@@ -19,7 +19,7 @@ bun install
 3. Run database migrations:
 
 ```shell
-bun --filter "./apps/pal" exec drizzle-kit migrate
+bun --filter "./apps/pal" db:migrate
 ```
 
 4. Run in development mode:
