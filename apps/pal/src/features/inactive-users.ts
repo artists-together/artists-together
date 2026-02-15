@@ -46,7 +46,7 @@ async function seedOnlineUsers() {
       if (member.user.bot) continue
       if (!member.presence) continue
       if (member.presence.status === "offline") continue
-      upsertLastOnline(member.user.id, nowMs)
+      await upsertLastOnline(member.user.id, nowMs)
       updated += 1
     }
 
@@ -109,7 +109,7 @@ client.on("presenceUpdate", async (_, presenceNew) => {
   if (presenceNew.status === "offline") return
 
   const nowMs = Date.now()
-  upsertLastOnline(presenceNew.user.id, nowMs)
+  await upsertLastOnline(presenceNew.user.id, nowMs)
 
   if (presenceNew.member.roles.cache.has(ROLE.INACTIVE)) {
     console.log("[inactive-users] remove inactive", presenceNew.user.username)
