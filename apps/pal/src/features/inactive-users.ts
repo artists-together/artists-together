@@ -68,7 +68,7 @@ async function scanInactiveUsers() {
     const database = connectDatabase()
     const cutoffMs = getInactiveCutoffMs()
 
-    const inactiveUsers = database
+    const inactiveUsers = await database
       .select({ userId: inactiveUserActivity.userId })
       .from(inactiveUserActivity)
       .where(lt(inactiveUserActivity.lastOnlineAt, cutoffMs))

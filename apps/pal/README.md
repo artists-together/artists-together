@@ -13,17 +13,17 @@ cp apps/pal/.env.example apps/pal/.env
 2. Install dependencies:
 
 ```shell
-pnpm install
+bun install
 ```
 
 3. Run database migrations:
 
 ```shell
-pnpm --filter pal exec drizzle-kit migrate
+bun --filter "./apps/pal" exec drizzle-kit migrate
 ```
 
 4. Run in development mode:
 
 ```shell
-pnpm --filter pal dev
+bun --filter "./apps/pal" dev
 ```
