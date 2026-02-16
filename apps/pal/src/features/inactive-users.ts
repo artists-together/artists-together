@@ -10,14 +10,9 @@ const INACTIVE_SCAN_INTERVAL_MS = 1000 * 60 * 60 * 12
 
 const PRESENCE_SCAN_INTERVAL_MS = 1000 * 60 * 60 * 12
 
-const ONE_HOUR_MS = 3_600_000
-
 function getInactiveCutoffMs() {
   const cutoff = new Date()
-  // TODO: remove this line after testing
-  cutoff.setMilliseconds(cutoff.getMilliseconds() - ONE_HOUR_MS)
-
-  // cutoff.setMonth(cutoff.getMonth() - INACTIVE_THRESHOLD_MONTHS)
+  cutoff.setMonth(cutoff.getMonth() - INACTIVE_THRESHOLD_MONTHS)
   return cutoff.getTime()
 }
 
