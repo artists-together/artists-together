@@ -110,8 +110,8 @@ export default function StarsVanillaThree() {
       lastTimeRef.current = time
 
       const velocity = y.getVelocity() / 3
-      const previousY = y.getPrevious() ?? 0
-      const direction = y.get() > previousY ? 1 : -1
+      const previousY = y.getPrevious()
+      const direction = previousY === undefined || y.get() >= previousY ? 1 : -1
       const step =
         direction * Math.max(delta, Math.abs(velocity) * MAX_SPEED_FACTOR)
 
