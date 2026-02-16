@@ -13,17 +13,17 @@ cp apps/pal/.env.example apps/pal/.env
 2. Install dependencies:
 
 ```shell
-bun install
+pnpm install
 ```
 
 3. Run database migrations:
 
 ```shell
-bun --filter "./apps/pal" db:migrate
+pnpm --filter pal db:migrate
 ```
 
 4. Run in development mode:
 
 ```shell
-bun --filter "./apps/pal" dev
+pnpm --filter pal dev
 ```

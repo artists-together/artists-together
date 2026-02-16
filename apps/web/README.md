@@ -13,17 +13,17 @@ cp apps/web/.env.example apps/web/.env
 2. Install dependencies:
 
 ```shell
-bun install
+pnpm install
 ```
 
 3. Run the dev server:
 
 ```shell
-bun --filter "./apps/web" dev
+pnpm --filter web dev
 ```
 
 4. (Optional) Rune the `wss` app for cursor presence:
 
 ```shell
-bun --filter "./apps/wss" dev
+pnpm --filter wss dev
 ```

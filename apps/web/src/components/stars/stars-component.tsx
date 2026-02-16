@@ -109,7 +109,11 @@ export default function StarsVanillaThree() {
       const delta = (time - lastTime) / 1000
       lastTimeRef.current = time
 
-      const velocity = Math.abs(y.getVelocity() / 3)
+      const velocity = y.getVelocity() / 3
+      const previousY = y.getPrevious()
+      const direction = previousY === undefined || y.get() >= previousY ? 1 : -1
+      const step =
+        direction * Math.max(delta, Math.abs(velocity) * MAX_SPEED_FACTOR)
 
       for (let i = 0; i < COUNT; i++) {
         tempObject.scale.set(
@@ -123,11 +127,14 @@ export default function StarsVanillaThree() {
         const yPos = positions[index + 1]
         let z = positions[index + 2]
 
+        z += step
+
         if (z > Z_BOUNDS / 2) {
-          const max = -Z_BOUNDS / 2
-          z = Math.random() * max
-        } else {
-          z += Math.max(delta, velocity * MAX_SPEED_FACTOR)
+          z = -Z_BOUNDS / 2
+        }
+
+        if (z < -Z_BOUNDS / 2) {
+          z = Z_BOUNDS / 2
         }
 
         positions[index + 2] = z
@@ -234,32 +241,50 @@ export default function StarsVanillaThree() {
     const camera = cameraRef.current
     if (!loaded || !renderer || !scene || !camera) return
 
-    if (reducedMotion) {
+    const stop = () => {
       runningRef.current = false
       if (frameActiveRef.current) {
         cancelFrame(renderFrame)
         frameActiveRef.current = false
       }
       lastTimeRef.current = null
-      renderer.render(scene, camera)
-      return
     }
 
-    if (!runningRef.current) {
-      runningRef.current = true
-      if (!frameActiveRef.current) {
-        frameActiveRef.current = true
-        frame.update(renderFrame, true)
+    const start = () => {
+      if (reducedMotion) {
+        stop()
+        renderer.render(scene, camera)
+        return
+      }
+
+      if (document.visibilityState === "hidden") {
+        stop()
+        return
+      }
+
+      if (!runningRef.current) {
+        runningRef.current = true
+        if (!frameActiveRef.current) {
+          frameActiveRef.current = true
+          frame.update(renderFrame, true)
+        }
       }
     }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        stop()
+      } else {
+        start()
+      }
+    }
+
+    start()
+    document.addEventListener("visibilitychange", handleVisibilityChange)
 
     return () => {
-      runningRef.current = false
-      if (frameActiveRef.current) {
-        cancelFrame(renderFrame)
-        frameActiveRef.current = false
-      }
-      lastTimeRef.current = null
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+      stop()
     }
   }, [loaded, reducedMotion, renderFrame])
 
