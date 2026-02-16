@@ -1,7 +1,6 @@
 "use client"
 
 import clsx from "clsx"
-import { useControls } from "leva"
 import {
   motion,
   scroll,
@@ -89,43 +88,29 @@ const PARTICLE_ANIMATION_ORDER = createShuffledOrder(CATEGORIES.length, 913)
 const PARTICLE_ANIMATION_RANK = createOrderRank(PARTICLE_ANIMATION_ORDER)
 
 const PARTICLE_OFFSET = [
-  { x: 35, y: 19 },
-  { x: -36, y: 18 },
-  { x: 34, y: 87 },
-  { x: 28, y: 9 },
-  { x: 20, y: 60 },
-  { x: -11, y: 80 },
-  { x: -32, y: 34 },
-  { x: -28, y: 60 },
-  { x: 8, y: 24 },
-  { x: 23, y: 46 },
-  { x: 17, y: 32 },
-  { x: 12, y: 83 },
-  { x: 4, y: 52 },
-  { x: -40, y: 85 },
-  { x: 0, y: 50 },
-  { x: -11, y: 8 },
-  { x: 27, y: 69 },
-  { x: -19, y: 40 },
+  { x: "35%", y: "19%" },
+  { x: "-36%", y: "18%" },
+  { x: "34%", y: "87%" },
+  { x: "28%", y: "9%" },
+  { x: "20%", y: "60%" },
+  { x: "-11%", y: "80%" },
+  { x: "-32%", y: "34%" },
+  { x: "-28%", y: "60%" },
+  { x: "8%", y: "24%" },
+  { x: "23%", y: "46%" },
+  { x: "17%", y: "32%" },
+  { x: "12%", y: "83%" },
+  { x: "4%", y: "52%" },
+  { x: "-40%", y: "85%" },
+  { x: "0%", y: "50%" },
+  { x: "-11%", y: "8%" },
+  { x: "27%", y: "69%" },
+  { x: "-19%", y: "40%" },
 ]
 
 function Particles() {
   const [ref, animate] = useAnimate()
   const parallaxStyle = useCursorParallax({ amount: 0.3 })
-
-  const controls = useControls(
-    CATEGORIES.reduce((controls, category, index) => {
-      return {
-        ...controls,
-        [category]: PARTICLE_OFFSET[index % PARTICLE_OFFSET.length],
-      }
-    }, {} as any),
-  )
-
-  const controlsArray = Object.values(controls).map((value) => ({
-    x: `${value.x}%`,
-    y: `${value.y}%`,
-  }))
 
   useEffect(() => {
     const animation = animate(
@@ -157,7 +142,7 @@ function Particles() {
     >
       <motion.ul className="sticky top-0 h-svh" style={parallaxStyle}>
         {CATEGORIES.map((category, index) => {
-          const offset = controlsArray[index % controlsArray.length]
+          const offset = PARTICLE_OFFSET[index % PARTICLE_OFFSET.length]
           return (
             <motion.li
               key={category}
