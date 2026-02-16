@@ -241,32 +241,50 @@ export default function StarsVanillaThree() {
     const camera = cameraRef.current
     if (!loaded || !renderer || !scene || !camera) return
 
-    if (reducedMotion) {
+    const stop = () => {
       runningRef.current = false
       if (frameActiveRef.current) {
         cancelFrame(renderFrame)
         frameActiveRef.current = false
       }
       lastTimeRef.current = null
-      renderer.render(scene, camera)
-      return
     }
 
-    if (!runningRef.current) {
-      runningRef.current = true
-      if (!frameActiveRef.current) {
-        frameActiveRef.current = true
-        frame.update(renderFrame, true)
+    const start = () => {
+      if (reducedMotion) {
+        stop()
+        renderer.render(scene, camera)
+        return
+      }
+
+      if (document.visibilityState === "hidden") {
+        stop()
+        return
+      }
+
+      if (!runningRef.current) {
+        runningRef.current = true
+        if (!frameActiveRef.current) {
+          frameActiveRef.current = true
+          frame.update(renderFrame, true)
+        }
       }
     }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        stop()
+      } else {
+        start()
+      }
+    }
+
+    start()
+    document.addEventListener("visibilitychange", handleVisibilityChange)
 
     return () => {
-      runningRef.current = false
-      if (frameActiveRef.current) {
-        cancelFrame(renderFrame)
-        frameActiveRef.current = false
-      }
-      lastTimeRef.current = null
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+      stop()
     }
   }, [loaded, reducedMotion, renderFrame])
 
