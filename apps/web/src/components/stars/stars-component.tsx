@@ -109,7 +109,11 @@ export default function StarsVanillaThree() {
       const delta = (time - lastTime) / 1000
       lastTimeRef.current = time
 
-      const velocity = Math.abs(y.getVelocity() / 3)
+      const velocity = y.getVelocity() / 3
+      const previousY = y.getPrevious() ?? 0
+      const direction = y.get() > previousY ? 1 : -1
+      const step =
+        direction * Math.max(delta, Math.abs(velocity) * MAX_SPEED_FACTOR)
 
       for (let i = 0; i < COUNT; i++) {
         tempObject.scale.set(
@@ -123,11 +127,14 @@ export default function StarsVanillaThree() {
         const yPos = positions[index + 1]
         let z = positions[index + 2]
 
+        z += step
+
         if (z > Z_BOUNDS / 2) {
-          const max = -Z_BOUNDS / 2
-          z = Math.random() * max
-        } else {
-          z += Math.max(delta, velocity * MAX_SPEED_FACTOR)
+          z = -Z_BOUNDS / 2
+        }
+
+        if (z < -Z_BOUNDS / 2) {
+          z = Z_BOUNDS / 2
         }
 
         positions[index + 2] = z
