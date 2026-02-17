@@ -127,7 +127,7 @@ export default function CursorsComponent() {
 
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-50 size-full select-none overflow-hidden"
+      className="pointer-events-none fixed inset-0 z-50 hidden size-full select-none overflow-hidden sm:block"
       aria-hidden
     >
       <AnimatePresence>

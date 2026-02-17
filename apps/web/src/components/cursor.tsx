@@ -79,28 +79,19 @@ export default function Cursor() {
       return
     }
 
-    const rect = {
-      height: window.innerHeight,
-      width: window.innerWidth,
-    }
-
-    const unsubscribeResize = resize(({ height, width }) => {
-      rect.height = height
-      rect.width = width
-    })
-
     const unsubscribeX = x.on("change", (x) => {
-      const w = rect.width / 2
+      const windowSize = getWindowSize()
+      const w = windowSize.width / 2
       atomCursorX.set((x - w) / w)
     })
 
     const unsubscribeY = y.on("change", (y) => {
-      const h = rect.height / 2
+      const windowSize = getWindowSize()
+      const h = windowSize.height / 2
       atomCursorY.set((y - h) / h)
     })
 
     return () => {
-      unsubscribeResize()
       unsubscribeX()
       unsubscribeY()
     }
