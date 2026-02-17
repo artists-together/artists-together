@@ -11,7 +11,7 @@ import {
 import { computed } from "nanostores"
 import { useEffect, useState } from "react"
 import Icon from "@/components/icon"
-import { atomRoom, getDocumentSize } from "@/lib/cursors"
+import { atomRoom, getWindowSize } from "@/lib/cursors"
 import { cursorPresenceVariants } from "@/lib/motion"
 import { useStore } from "@/lib/nanostores"
 import { shuffle } from "@/lib/utils"
@@ -34,10 +34,10 @@ const COLORS = shuffle([
 ])
 
 function getCursorPosition([x, y]: NonNullable<CursorPosition>): Point {
-  const rect = getDocumentSize()
+  const windowSize = getWindowSize()
   return {
-    x: (x * 100 * rect.width) / rect.width,
-    y: (y * 100 * rect.height) / rect.height,
+    x: (x * 100 * windowSize.width) / windowSize.width,
+    y: (y * 100 * windowSize.height) / windowSize.height,
   }
 }
 
@@ -127,7 +127,7 @@ export default function CursorsComponent() {
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-50 size-full select-none overflow-hidden"
+      className="pointer-events-none fixed inset-0 z-50 size-full select-none overflow-hidden"
       aria-hidden
     >
       <AnimatePresence>

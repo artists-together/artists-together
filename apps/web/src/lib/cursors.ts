@@ -1,15 +1,20 @@
 import { Room } from "@artists-together/core/ws"
+import { resize } from "framer-motion"
 import { atom, computed } from "nanostores"
 import { onMessage } from "./ws"
 
 export const atomRoom = atom<Room>({})
 
-export const atomDocumentSize = atom<Pick<
+export const atomWindowSize = atom<Pick<
   DOMRectReadOnly,
   "width" | "height"
 > | null>(null)
 
 if (typeof window !== "undefined") {
+  resize((rect) => {
+    atomWindowSize.set(rect)
+  })
+
   onMessage("handshake", (room) => {
     atomRoom.set(room)
   })
@@ -29,12 +34,13 @@ if (typeof window !== "undefined") {
   })
 }
 
-export function getDocumentSize() {
-  const atom = atomDocumentSize.get()
+export function getWindowSize() {
+  const atom = atomWindowSize.get()
   if (atom) return atom
-  const rect = document.documentElement.getBoundingClientRect()
-  atomDocumentSize.set(rect)
-  return rect
+  const width = window.innerWidth
+  const height = window.innerHeight
+  atomWindowSize.set({ width, height })
+  return { width, height }
 }
 
 export const atomCursorX = atom(0.5)

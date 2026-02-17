@@ -21,9 +21,8 @@ import Icon from "@/components/icon"
 import {
   atomCursorX,
   atomCursorY,
-  atomDocumentSize,
   atomRoom,
-  getDocumentSize,
+  getWindowSize,
 } from "@/lib/cursors"
 import {
   createCriticallyDampedSpring,
@@ -72,12 +71,6 @@ export default function Cursor() {
   if (!isEligibleForCursor && state === "show") {
     setState("hide")
   }
-
-  useEffect(() => {
-    return resize(document.documentElement, (_, rect) => {
-      atomDocumentSize.set(rect)
-    })
-  }, [])
 
   useEffect(() => {
     if (state === "hide") {
@@ -148,7 +141,7 @@ export default function Cursor() {
     const update = new Throttler(
       (event: MouseEvent) => {
         const now = performance.now()
-        const delta = typeof timestamp === "number" ? now - timestamp : 0
+        const delta = timestamp ? now - timestamp : 0
         timestamp = now
 
         if (state === "hide") {
@@ -156,9 +149,9 @@ export default function Cursor() {
           return notify.maybeExecute()
         }
 
-        const rect = getDocumentSize()
-        const x = clampCursorPosition(event.pageX / rect.width)
-        const y = clampCursorPosition(event.pageY / rect.height)
+        const windowSize = getWindowSize()
+        const x = clampCursorPosition(event.clientX / windowSize.width)
+        const y = clampCursorPosition(event.clientY / windowSize.height)
         const position: CursorPositionWithDelta = [delta, [x, y]]
 
         if (alone) {
