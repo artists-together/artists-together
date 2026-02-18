@@ -1,4 +1,3 @@
 # web
-
-# pal
-- inactive users publicar con 1 dia de threshold para probar
+- safari scroll quirks
+- reset cursor timestamp after notify send to avoid compounding gaps
